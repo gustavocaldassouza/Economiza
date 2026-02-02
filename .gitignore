@@ -7,6 +7,9 @@ local.properties
 
 # Log/OS Files
 *.log
+Thumbs.db
+.DS_Store
+
 
 # Android Studio generated files and folders
 captures/
@@ -22,6 +25,13 @@ output-metadata.json
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
+
+# VS Code
+.vscode/
+
+# Compiled class files
+*.class
+
 
 # Keystore files
 *.jks
