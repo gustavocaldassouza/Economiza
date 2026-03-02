@@ -19,8 +19,17 @@ import java.util.Locale;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
+    public interface OnTransactionClickListener {
+        void onTransactionClick(Transaction t);
+    }
+
+    private OnTransactionClickListener listener;
     private List<Transaction> transactions = new ArrayList<>();
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+
+    public void setListener(OnTransactionClickListener listener) {
+        this.listener = listener;
+    }
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
@@ -37,6 +46,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder h, int position) {
         Transaction t = transactions.get(position);
+
+        h.itemView.setOnClickListener(v -> {
+            if (listener != null)
+                listener.onTransactionClick(t);
+        });
+
         h.description.setText(t.description != null && !t.description.isEmpty()
                 ? t.description
                 : "Transaction");

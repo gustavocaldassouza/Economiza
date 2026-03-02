@@ -30,7 +30,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,12 +72,6 @@ public class DashboardFragment extends Fragment {
         txtExpenses = view.findViewById(R.id.txt_expense_value);
         barChart = view.findViewById(R.id.bar_chart);
         pieChart = view.findViewById(R.id.pie_chart);
-        ExtendedFloatingActionButton fab = view.findViewById(R.id.fab_smart_entry);
-
-        if (fab != null) {
-            fab.setOnClickListener(
-                    v -> startActivity(new android.content.Intent(requireActivity(), AddTransactionActivity.class)));
-        }
 
         // Style charts
         styleBarChart();

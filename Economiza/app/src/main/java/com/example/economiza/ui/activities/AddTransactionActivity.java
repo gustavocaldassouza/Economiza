@@ -49,6 +49,7 @@ public class AddTransactionActivity extends BaseActivity {
     private long selectedDateMillis = System.currentTimeMillis();
     private List<Category> categoryList = new ArrayList<>();
     private int selectedCategoryId = 0;
+    private int editingTransactionId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,37 @@ public class AddTransactionActivity extends BaseActivity {
                 }
             });
         });
+
+        // Check if editing
+        editingTransactionId = getIntent().getIntExtra("EXTRA_TRANSACTION_ID", -1);
+        if (editingTransactionId != -1) {
+            ((TextView) findViewById(R.id.txt_title)).setText("Edit Transaction");
+            loadTransactionForEditing();
+        }
+    }
+
+    private void loadTransactionForEditing() {
+        new Thread(() -> {
+            Transaction t = txViewModel.getTransactionById(editingTransactionId);
+            if (t != null) {
+                runOnUiThread(() -> {
+                    etAmount.setText(String.valueOf(t.amount / 100.0));
+                    etDescription.setText(t.description);
+                    selectedDateMillis = t.timestamp;
+                    updateDateLabel();
+                    setTransactionType(!t.isIncome);
+                    selectedCategoryId = t.categoryId;
+
+                    // Set spinner selection
+                    for (int i = 0; i < categoryList.size(); i++) {
+                        if (categoryList.get(i).id == selectedCategoryId) {
+                            spinnerCategory.setSelection(i);
+                            break;
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     private void setTransactionType(boolean expense) {
@@ -184,13 +216,20 @@ public class AddTransactionActivity extends BaseActivity {
         }
 
         Transaction transaction = new Transaction();
+        if (editingTransactionId != -1)
+            transaction.id = editingTransactionId;
+
         transaction.amount = Math.round(amountDouble * 100);
         transaction.description = description;
         transaction.timestamp = selectedDateMillis;
         transaction.isIncome = !isExpense;
         transaction.categoryId = selectedCategoryId;
 
-        txViewModel.addTransaction(transaction);
+        if (editingTransactionId != -1) {
+            txViewModel.updateTransaction(transaction);
+        } else {
+            txViewModel.addTransaction(transaction);
+        }
 
         Toast.makeText(this, "Transaction saved ✓", Toast.LENGTH_SHORT).show();
         finish();

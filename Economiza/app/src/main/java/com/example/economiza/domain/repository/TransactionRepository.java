@@ -15,6 +15,8 @@ public interface TransactionRepository {
 
     void delete(Transaction transaction);
 
+    Transaction findById(int id);
+
     LiveData<List<Transaction>> getAllTransactions();
 
     List<Transaction> getAllTransactionsSync();

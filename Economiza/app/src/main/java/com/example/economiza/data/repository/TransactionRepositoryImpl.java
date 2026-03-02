@@ -33,6 +33,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    public Transaction findById(int id) {
+        return dao.findById(id);
+    }
+
+    @Override
     public LiveData<List<Transaction>> getAllTransactions() {
         return dao.getAllTransactions();
     }

@@ -11,6 +11,8 @@ import com.example.economiza.domain.usecase.AddTransactionUseCase;
 import com.example.economiza.domain.usecase.DeleteCategoryUseCase;
 import com.example.economiza.domain.usecase.UpdateCategoryUseCase;
 import com.example.economiza.domain.usecase.DeleteTransactionUseCase;
+import com.example.economiza.domain.usecase.UpdateTransactionUseCase;
+import com.example.economiza.domain.usecase.GetTransactionByIdUseCase;
 import com.example.economiza.domain.usecase.ExportDataUseCase;
 import com.example.economiza.domain.usecase.GetBudgetsUseCase;
 import com.example.economiza.domain.usecase.GetCategoriesUseCase;
@@ -24,7 +26,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final GetTransactionsUseCase getTransactions;
     private final AddTransactionUseCase addTransaction;
+    private final UpdateTransactionUseCase updateTransaction;
     private final DeleteTransactionUseCase deleteTransaction;
+    private final GetTransactionByIdUseCase getTransactionById;
     private final GetTotalExpensesUseCase getTotalExpenses;
     private final GetTotalIncomeUseCase getTotalIncome;
     private final TransactionRepository txRepo;
@@ -41,7 +45,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public ViewModelFactory(
             GetTransactionsUseCase getTransactions,
             AddTransactionUseCase addTransaction,
+            UpdateTransactionUseCase updateTransaction,
             DeleteTransactionUseCase deleteTransaction,
+            GetTransactionByIdUseCase getTransactionById,
             GetTotalExpensesUseCase getTotalExpenses,
             GetTotalIncomeUseCase getTotalIncome,
             TransactionRepository txRepo,
@@ -56,7 +62,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             ExportDataUseCase exportData) {
         this.getTransactions = getTransactions;
         this.addTransaction = addTransaction;
+        this.updateTransaction = updateTransaction;
         this.deleteTransaction = deleteTransaction;
+        this.getTransactionById = getTransactionById;
         this.getTotalExpenses = getTotalExpenses;
         this.getTotalIncome = getTotalIncome;
         this.txRepo = txRepo;
@@ -79,7 +87,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new DashboardViewModel(getTotalExpenses, getTotalIncome, txRepo, getCategories);
 
         if (modelClass.isAssignableFrom(TransactionViewModel.class))
-            return (T) new TransactionViewModel(getTransactions, addTransaction);
+            return (T) new TransactionViewModel(getTransactions, addTransaction, updateTransaction, getTransactionById);
         if (modelClass.isAssignableFrom(CategoryViewModel.class))
             return (T) new CategoryViewModel(getCategories, addCategory, updateCategory, deleteCategory);
 

@@ -40,6 +40,11 @@ public class TransactionsFragment extends Fragment {
         TextView txCount = view.findViewById(R.id.txt_tx_count);
 
         TransactionAdapter adapter = new TransactionAdapter();
+        adapter.setListener(t -> {
+            Intent intent = new Intent(requireActivity(), AddTransactionActivity.class);
+            intent.putExtra("EXTRA_TRANSACTION_ID", t.id);
+            startActivity(intent);
+        });
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
 

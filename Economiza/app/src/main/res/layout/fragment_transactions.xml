@@ -61,8 +61,8 @@
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="80dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="120dp"
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/primary_blue"
         app:tint="@color/white" />
