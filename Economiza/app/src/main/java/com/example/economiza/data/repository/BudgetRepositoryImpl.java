@@ -3,8 +3,8 @@ package com.example.economiza.data.repository;
 import androidx.lifecycle.LiveData;
 import com.example.economiza.data.local.BudgetDao;
 import com.example.economiza.domain.model.Budget;
+import com.example.economiza.domain.model.BudgetListItem;
 import com.example.economiza.domain.repository.BudgetRepository;
-
 import java.util.List;
 
 public class BudgetRepositoryImpl implements BudgetRepository {
@@ -30,8 +30,8 @@ public class BudgetRepositoryImpl implements BudgetRepository {
     }
 
     @Override
-    public LiveData<List<Budget>> getAllBudgets() {
-        return budgetDao.getAllBudgets();
+    public LiveData<List<BudgetListItem>> getAllBudgetsWithSpending(long start, long end) {
+        return budgetDao.getAllBudgetsWithSpending(start, end);
     }
 
     @Override

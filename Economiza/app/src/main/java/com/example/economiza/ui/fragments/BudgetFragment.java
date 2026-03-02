@@ -22,11 +22,17 @@ import com.example.economiza.ui.viewmodel.BudgetViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import com.example.economiza.domain.model.Category;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BudgetFragment extends Fragment {
 
     private BudgetViewModel vm;
     private BudgetAdapter adapter;
+    private List<Category> allCategories = new ArrayList<>();
 
     @Nullable
     @Override
@@ -55,46 +61,77 @@ public class BudgetFragment extends Fragment {
                 adapter.setBudgets(budgets);
         });
 
+        vm.categories.observe(getViewLifecycleOwner(), categories -> {
+            if (categories != null)
+                allCategories = categories;
+        });
+
         btnAdd.setOnClickListener(v -> showAddBudgetDialog());
     }
 
     private void showAddBudgetDialog() {
-        View dialogView = LayoutInflater.from(requireContext())
-                .inflate(android.R.layout.simple_list_item_1, null);
+        if (allCategories.isEmpty()) {
+            Toast.makeText(requireContext(), "Create some categories first", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Build inline dialog with two fields
         android.widget.LinearLayout layout = new android.widget.LinearLayout(requireContext());
         layout.setOrientation(android.widget.LinearLayout.VERTICAL);
-        layout.setPadding(48, 32, 48, 0);
+        layout.setPadding(64, 32, 64, 0);
 
-        android.widget.EditText etCategoryId = new android.widget.EditText(requireContext());
-        etCategoryId.setHint("Category ID");
-        etCategoryId.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        // Category Spinner
+        android.widget.TextView txtLabelCat = new android.widget.TextView(requireContext());
+        txtLabelCat.setText("Select Category");
+        txtLabelCat.setPadding(0, 0, 0, 8);
 
-        android.widget.EditText etLimit = new android.widget.EditText(requireContext());
-        etLimit.setHint("Monthly limit (e.g. 500.00)");
+        Spinner spinner = new Spinner(requireContext());
+        List<String> names = new ArrayList<>();
+        for (Category c : allCategories)
+            names.add(c.name);
+        ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_dropdown_item, names);
+        spinner.setAdapter(spinAdapter);
+
+        // Limit Field
+        TextInputLayout tilLimit = new TextInputLayout(requireContext(), null,
+                com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox);
+        tilLimit.setHint("Monthly Limit ($)");
+//        tilLimit.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINED);
+        tilLimit.setBoxCornerRadii(16f, 16f, 16f, 16f);
+        TextInputEditText etLimit = new TextInputEditText(tilLimit.getContext());
         etLimit.setInputType(
                 android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        tilLimit.addView(etLimit);
 
-        layout.addView(etCategoryId);
-        layout.addView(etLimit);
+        android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 32, 0, 0);
+
+        layout.addView(txtLabelCat);
+        layout.addView(spinner);
+        layout.addView(tilLimit, lp);
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("Set Budget")
+                .setTitle("Set New Budget")
                 .setView(layout)
                 .setPositiveButton("Save", (d, w) -> {
-                    String catStr = etCategoryId.getText().toString().trim();
                     String limitStr = etLimit.getText().toString().trim();
-                    if (catStr.isEmpty() || limitStr.isEmpty()) {
-                        Toast.makeText(requireContext(), "Fill all fields", Toast.LENGTH_SHORT).show();
+                    if (limitStr.isEmpty()) {
+                        Toast.makeText(requireContext(), "Enter a limit", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    int selectedPos = spinner.getSelectedItemPosition();
+                    Category selectedCat = allCategories.get(selectedPos);
+
                     Budget budget = new Budget();
-                    budget.categoryId = Integer.parseInt(catStr);
+                    budget.categoryId = selectedCat.id;
                     budget.monthlyLimit = Math.round(Double.parseDouble(limitStr) * 100);
-                    budget.spentSoFar = 0;
+                    budget.spentSoFar = 0; // Legacy field, logic now uses dynamic calc
+
                     vm.addBudget(budget);
-                    Toast.makeText(requireContext(), "Budget set!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Budget created for " + selectedCat.name, Toast.LENGTH_SHORT)
+                            .show();
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

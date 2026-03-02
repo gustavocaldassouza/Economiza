@@ -2,6 +2,7 @@ package com.example.economiza.domain.repository;
 
 import androidx.lifecycle.LiveData;
 import com.example.economiza.domain.model.Budget;
+import com.example.economiza.domain.model.BudgetListItem;
 import java.util.List;
 
 public interface BudgetRepository {
@@ -11,7 +12,7 @@ public interface BudgetRepository {
 
     void delete(Budget budget);
 
-    LiveData<List<Budget>> getAllBudgets();
+    LiveData<List<BudgetListItem>> getAllBudgetsWithSpending(long start, long end);
 
     LiveData<Budget> getBudgetForCategory(int catId);
 }

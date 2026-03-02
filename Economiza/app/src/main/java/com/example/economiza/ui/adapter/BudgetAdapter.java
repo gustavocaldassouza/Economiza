@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.economiza.R;
-import com.example.economiza.domain.model.Budget;
+import com.example.economiza.domain.model.BudgetListItem;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ import java.util.Locale;
 
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder> {
 
-    private List<Budget> budgets = new ArrayList<>();
+    private List<BudgetListItem> budgets = new ArrayList<>();
 
-    public void setBudgets(List<Budget> budgets) {
+    public void setBudgets(List<BudgetListItem> budgets) {
         this.budgets = budgets;
         notifyDataSetChanged();
     }
@@ -34,19 +34,24 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder h, int position) {
-        Budget b = budgets.get(position);
-        h.category.setText("Category #" + b.categoryId);
+        BudgetListItem item = budgets.get(position);
+        h.category.setText(item.categoryName != null ? item.categoryName : "Category " + item.budget.categoryId);
 
-        double limit = b.monthlyLimit / 100.0;
-        double spent = b.spentSoFar / 100.0;
+        double limit = item.budget.monthlyLimit / 100.0;
+        double spent = item.currentSpending / 100.0;
         double remaining = limit - spent;
 
         h.spent.setText(String.format(Locale.getDefault(), "$%.0f / $%.0f", spent, limit));
 
         int progress = limit > 0 ? (int) ((spent / limit) * 100) : 0;
         h.progress.setProgress(Math.min(progress, 100));
+
+        // Reset colors
+        h.progress.setIndicatorColor(h.itemView.getContext().getColor(R.color.primary_blue));
+        h.remaining.setTextColor(h.itemView.getContext().getColor(R.color.accent_green));
+
         if (progress >= 90) {
-            h.progress.setIndicatorColor(0xFFEF5350);
+            h.progress.setIndicatorColor(0xFFEF5350); // Red
             h.remaining.setTextColor(0xFFEF5350);
         }
 
@@ -54,6 +59,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
             h.remaining.setText(String.format(Locale.getDefault(), "$%.2f remaining", remaining));
         } else {
             h.remaining.setText(String.format(Locale.getDefault(), "$%.2f over budget", -remaining));
+            h.remaining.setTextColor(0xFFEF5350);
         }
     }
 

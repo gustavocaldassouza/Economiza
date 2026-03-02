@@ -92,7 +92,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new CategoryViewModel(getCategories, addCategory, updateCategory, deleteCategory);
 
         if (modelClass.isAssignableFrom(BudgetViewModel.class))
-            return (T) new BudgetViewModel(getBudgets, addBudget);
+            return (T) new BudgetViewModel(getBudgets, addBudget, getCategories);
         if (modelClass.isAssignableFrom(RecurringPaymentViewModel.class))
             return (T) new RecurringPaymentViewModel(getRecurringPayments, addRecurringPayment);
         throw new IllegalArgumentException("Unknown ViewModel: " + modelClass.getName());
