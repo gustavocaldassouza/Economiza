@@ -10,12 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.economiza.R;
 import com.example.economiza.domain.model.Transaction;
+import com.example.economiza.domain.repository.CategoryRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
@@ -24,8 +29,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     private OnTransactionClickListener listener;
+    private final CategoryRepository categoryRepository;
     private List<Transaction> transactions = new ArrayList<>();
+    private final Map<Integer, String> categoryCache = new HashMap<>();
+    private final Executor executor = Executors.newSingleThreadExecutor();
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+
+    public TransactionAdapter(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     public void setListener(OnTransactionClickListener listener) {
         this.listener = listener;
@@ -65,6 +77,20 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             h.amount.setText(String.format(Locale.getDefault(), "-R$ %.2f", amount));
             h.amount.setTextColor(0xFFEF5350); // red
         }
+
+        // Handle category chip
+        if (categoryCache.containsKey(t.categoryId)) {
+            h.category.setText(categoryCache.get(t.categoryId));
+        } else {
+            h.category.setText("...");
+            executor.execute(() -> {
+                String name = categoryRepository.getCategoryNameByIdSync(t.categoryId);
+                if (name != null) {
+                    categoryCache.put(t.categoryId, name);
+                    h.itemView.post(() -> notifyItemChanged(position));
+                }
+            });
+        }
     }
 
     @Override
@@ -73,13 +99,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView description, date, amount;
+        TextView description, date, amount, category;
 
         ViewHolder(View v) {
             super(v);
             description = v.findViewById(R.id.txt_tx_description);
             date = v.findViewById(R.id.txt_tx_date);
             amount = v.findViewById(R.id.txt_tx_amount);
+            category = v.findViewById(R.id.txt_tx_category);
         }
     }
 }

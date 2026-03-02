@@ -18,4 +18,6 @@ public interface CategoryRepository {
     List<Category> getAllCategoriesSync();
 
     int getCategoryCount();
+
+    String getCategoryNameByIdSync(int id);
 }

@@ -192,4 +192,12 @@ public class EconomizaApp extends Application {
     public AppDatabase getDatabase() {
         return database;
     }
+
+    public CategoryRepository getCategoryRepository() {
+        return categoryRepository;
+    }
+
+    public TransactionRepository getTransactionRepository() {
+        return transactionRepository;
+    }
 }

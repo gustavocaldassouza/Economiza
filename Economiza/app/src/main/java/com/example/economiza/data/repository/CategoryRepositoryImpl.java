@@ -41,6 +41,11 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
+    public String getCategoryNameByIdSync(int id) {
+        return dao.getCategoryNameByIdSync(id);
+    }
+
+    @Override
     public int getCategoryCount() {
         return dao.getCategoryCount();
     }

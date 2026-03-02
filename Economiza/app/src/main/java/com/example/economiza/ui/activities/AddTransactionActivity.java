@@ -6,12 +6,15 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -97,12 +100,26 @@ public class AddTransactionActivity extends BaseActivity {
                 return;
             categoryList = categories;
 
-            List<String> names = new ArrayList<>();
-            for (Category c : categories)
-                names.add(c.name);
+            ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(
+                    this, android.R.layout.simple_spinner_item, categoryList) {
+                @NonNull
+                @Override
+                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    TextView tv = (TextView) super.getView(position, convertView, parent);
+                    tv.setText(categoryList.get(position).name);
+                    tv.setTextColor(Color.WHITE);
+                    return tv;
+                }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                    this, android.R.layout.simple_spinner_item, names);
+                @Override
+                public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
+                    tv.setText(categoryList.get(position).name);
+                    tv.setTextColor(Color.WHITE);
+                    tv.setPadding(32, 32, 32, 32);
+                    return tv;
+                }
+            };
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerCategory.setAdapter(adapter);
 

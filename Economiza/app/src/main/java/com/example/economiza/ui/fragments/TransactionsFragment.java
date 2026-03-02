@@ -39,7 +39,8 @@ public class TransactionsFragment extends Fragment {
         FloatingActionButton fab = view.findViewById(R.id.fab_add);
         TextView txCount = view.findViewById(R.id.txt_tx_count);
 
-        TransactionAdapter adapter = new TransactionAdapter();
+        EconomizaApp app = (EconomizaApp) requireActivity().getApplication();
+        TransactionAdapter adapter = new TransactionAdapter(app.getCategoryRepository());
         adapter.setListener(t -> {
             Intent intent = new Intent(requireActivity(), AddTransactionActivity.class);
             intent.putExtra("EXTRA_TRANSACTION_ID", t.id);
