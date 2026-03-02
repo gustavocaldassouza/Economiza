@@ -28,6 +28,11 @@ public class VaultManager {
     private static final String KEY_SALT = "vault_salt";
     private static final String KEY_VERIFY_HASH = "vault_verify_hash";
     private static final String KEY_VAULT_EXISTS = "vault_exists";
+    /**
+     * Separate app-level PIN hash (SHA-256 + salt). Stored alongside vault prefs.
+     */
+    private static final String KEY_PIN_HASH = "vault_pin_hash";
+    private static final String KEY_PIN_SALT = "vault_pin_salt";
 
     // PBKDF2 parameters – 310,000 iterations is OWASP 2023 recommendation for
     // SHA-256
@@ -92,11 +97,48 @@ public class VaultManager {
     }
 
     /**
-     * Deletes all vault metadata (for "factory reset"). Does NOT delete the DB
-     * file.
+     * Deletes all vault metadata AND the device PIN (for "factory reset").
+     * Does NOT delete the DB file — call AppDatabase.destroyInstance() first.
      */
     public void destroyVault() {
         prefs.edit().clear().apply();
+    }
+
+    // ─── Device PIN ─────────────────────────────────────────────────────────────
+
+    /** Returns true if a device PIN has been set for the vault. */
+    public boolean hasPinSet() {
+        return prefs.contains(KEY_PIN_HASH);
+    }
+
+    /**
+     * Stores a hashed + salted version of the PIN.
+     * Uses PBKDF2 with fewer iterations (10_000) since it's already gated
+     * behind the vault password — speed is acceptable here.
+     */
+    public void createPin(String pin) {
+        byte[] salt = generateSalt();
+        byte[] hash = pbkdf2(pin, salt, 10_000, 256);
+        prefs.edit()
+                .putString(KEY_PIN_SALT, Base64.encodeToString(salt, Base64.DEFAULT))
+                .putString(KEY_PIN_HASH, Base64.encodeToString(hash, Base64.DEFAULT))
+                .apply();
+    }
+
+    /**
+     * Verifies the supplied PIN against the stored hash.
+     * 
+     * @return true if the PIN is correct.
+     */
+    public boolean verifyPin(String pin) {
+        String saltStr = prefs.getString(KEY_PIN_SALT, null);
+        String storedHash = prefs.getString(KEY_PIN_HASH, null);
+        if (saltStr == null || storedHash == null)
+            return false;
+
+        byte[] salt = Base64.decode(saltStr, Base64.DEFAULT);
+        byte[] hash = pbkdf2(pin, salt, 10_000, 256);
+        return constantTimeEquals(storedHash, Base64.encodeToString(hash, Base64.DEFAULT));
     }
 
     // ─── Private helpers ────────────────────────────────────────────────────────

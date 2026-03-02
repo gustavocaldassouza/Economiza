@@ -47,6 +47,10 @@
 
 
         <activity
+            android:name=".ui.activities.SetPinActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".ui.activities.ManageCategoriesActivity"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="adjustResize" />

@@ -5,31 +5,19 @@
     android:layout_height="match_parent"
     android:background="@color/background_deep">
 
-    <!-- Back -->
-    <ImageView
-        android:id="@+id/btn_back"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="@dimen/margin_large"
-        android:src="@drawable/ic_arrow_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white" />
-
     <!-- Lock icon with glow -->
     <View
         android:id="@+id/glow"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@drawable/blue_glow"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_back" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/img_lock"
+        android:id="@+id/img_pin"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:background="@drawable/rounded_blue_square"
@@ -46,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Unlock Your Vault"
+        android:text="Set Device PIN"
         android:textColor="@color/white"
         android:textSize="26sp"
         android:textStyle="bold"
@@ -59,87 +47,30 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="48dp"
         android:gravity="center"
-        android:text="Enter your vault password and device PIN to access your financial data."
+        android:text="Add a 4–8 digit PIN for extra security. You'll need both your vault password and this PIN every time you open Economiza."
         android:textColor="@color/text_secondary"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_title" />
 
-    <!-- ── Vault Password ── -->
-    <TextView
-        android:id="@+id/lbl_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="32dp"
-        android:text="VAULT PASSWORD"
-        android:textColor="@color/text_secondary"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_subtitle" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_password"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="@dimen/margin_large"
-        app:boxBackgroundColor="@color/card_background"
-        app:boxStrokeColor="@color/primary_blue"
-        app:hintTextColor="@color/text_secondary"
-        app:endIconMode="password_toggle"
-        app:endIconTint="@color/text_secondary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lbl_password">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter your vault password"
-            android:inputType="textPassword"
-            android:textColor="@color/white"
-            android:imeOptions="actionNext" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Password error -->
-    <TextView
-        android:id="@+id/txt_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="4dp"
-        android:text=""
-        android:textColor="#EF5350"
-        android:textSize="13sp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_password" />
-
-    <!-- ── Device PIN ── -->
+    <!-- PIN field -->
     <TextView
         android:id="@+id/lbl_pin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:text="DEVICE PIN"
         android:textColor="@color/text_secondary"
         android:textSize="11sp"
         android:textStyle="bold"
         android:letterSpacing="0.12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_error" />
+        app:layout_constraintTop_toBottomOf="@id/txt_subtitle" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_pin"
@@ -162,85 +93,99 @@
             android:id="@+id/et_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your PIN (4–8 digits)"
+            android:hint="Choose 4–8 digits"
+            android:inputType="numberPassword"
+            android:maxLength="8"
+            android:textColor="@color/white"
+            android:imeOptions="actionNext" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Confirm PIN -->
+    <TextView
+        android:id="@+id/lbl_confirm_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_large"
+        android:layout_marginTop="20dp"
+        android:text="CONFIRM PIN"
+        android:textColor="@color/text_secondary"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_pin" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_confirm_pin"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_large"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_large"
+        app:boxBackgroundColor="@color/card_background"
+        app:boxStrokeColor="@color/primary_blue"
+        app:hintTextColor="@color/text_secondary"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/text_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lbl_confirm_pin">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_confirm_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Repeat PIN"
             android:inputType="numberPassword"
             android:maxLength="8"
             android:textColor="@color/white"
             android:imeOptions="actionDone" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- PIN error -->
+    <!-- Error -->
     <TextView
-        android:id="@+id/txt_pin_error"
+        android:id="@+id/txt_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text=""
         android:textColor="#EF5350"
         android:textSize="13sp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_pin" />
+        app:layout_constraintTop_toBottomOf="@id/til_confirm_pin" />
 
-    <!-- Loading indicator -->
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:visibility="gone"
-        app:indicatorColor="@color/primary_blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_pin_error" />
-
-    <!-- Unlock button -->
+    <!-- Set PIN button -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_unlock"
+        android:id="@+id/btn_set_pin"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="@dimen/margin_large"
         android:layout_marginEnd="@dimen/margin_large"
-        android:layout_marginBottom="16dp"
-        android:text="Unlock Vault"
+        android:layout_marginBottom="28dp"
+        android:text="Set PIN &amp; Open Vault"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:backgroundTint="@color/primary_blue"
         app:cornerRadius="@dimen/card_corner_radius"
-        app:layout_constraintBottom_toTopOf="@id/txt_forgot"
+        app:layout_constraintBottom_toTopOf="@id/btn_skip_pin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Forgot password link -->
+    <!-- Skip (no PIN) -->
     <TextView
-        android:id="@+id/txt_forgot"
+        android:id="@+id/btn_skip_pin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:padding="8dp"
-        android:text="Forgot your password? Create a new vault"
-        android:textColor="#EF5350"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toTopOf="@id/txt_warning"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- Security badge -->
-    <TextView
-        android:id="@+id/txt_warning"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginEnd="@dimen/margin_large"
-        android:layout_marginBottom="24dp"
-        android:gravity="center"
-        android:text="🔐  AES-256 Encrypted • Privacy-First • No Cloud"
+        android:text="Skip — use password only"
         android:textColor="@color/text_secondary"
-        android:textSize="11sp"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

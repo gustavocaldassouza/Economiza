@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.economiza.EconomizaApp;
-import com.example.economiza.MainActivity;
+import com.example.economiza.ui.activities.SetPinActivity;
 import com.example.economiza.R;
 import com.example.economiza.data.local.VaultManager;
 import com.google.android.material.button.MaterialButton;
@@ -95,8 +95,9 @@ public class CreateVaultActivity extends AppCompatActivity {
                 ((EconomizaApp) getApplication()).initDependencies(key);
 
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Vault created!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, MainActivity.class);
+                    Toast.makeText(this, "Vault created! 🔐", Toast.LENGTH_SHORT).show();
+                    // Go to PIN setup — user decides whether to add a PIN or skip
+                    Intent intent = new Intent(this, SetPinActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 });
