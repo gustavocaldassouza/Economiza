@@ -78,6 +78,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    public LiveData<List<CategoryTotal>> getExpensesByCategory(long s, long e) {
+        return dao.getExpensesByCategory(s, e);
+    }
+
+    @Override
     public LiveData<List<DayTotal>> getDailyExpenses(long s, long e) {
         return dao.getDailyExpenses(s, e);
     }

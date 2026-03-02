@@ -104,42 +104,37 @@ public class DashboardFragment extends Fragment {
 
         // ── Categories (for slice labels) ─────────────────────────────────────
         viewModel.categories.observe(getViewLifecycleOwner(), categories -> {
-            if (categories != null)
+            if (categories != null) {
                 allCategories = categories;
+                // Re-populate pie chart if we already have expenses to resolve names correctly
+                if (viewModel.expensesByCategory.getValue() != null) {
+                    populatePieChart(viewModel.expensesByCategory.getValue());
+                }
+            }
         });
 
         // ── Pie chart ─────────────────────────────────────────────────────────
         viewModel.expensesByCategory.observe(getViewLifecycleOwner(), totals -> {
-            if (totals == null || totals.isEmpty()) {
-                pieChart.setNoDataText("No expenses yet");
-                pieChart.invalidate();
-                return;
+            if (totals != null) {
+                populatePieChart(totals);
             }
-            populatePieChart(totals);
         });
 
         // ── Bar chart (last 7 days) ──────────────────────────────────────────
         viewModel.weeklyExpenses.observe(getViewLifecycleOwner(), dayTotals -> {
-            if (dayTotals == null || dayTotals.isEmpty()) {
-                barChart.setNoDataText("No data for this week");
-                barChart.invalidate();
-                if (txtSpendingTotal != null)
-                    txtSpendingTotal.setText("$ 0.00");
-                updateWeeklyRange();
-                return;
-            }
-
             // Calculate total for the week
             long totalCents = 0;
-            for (DayTotal dt : dayTotals) {
-                totalCents += dt.total;
+            if (dayTotals != null) {
+                for (DayTotal dt : dayTotals) {
+                    totalCents += dt.total;
+                }
             }
             if (txtSpendingTotal != null) {
                 txtSpendingTotal.setText(String.format(Locale.getDefault(), "$ %.2f", totalCents / 100.0));
             }
 
             updateWeeklyRange();
-            populateBarChart(dayTotals);
+            populateBarChart(dayTotals != null ? dayTotals : new ArrayList<>());
         });
     }
 
@@ -160,6 +155,13 @@ public class DashboardFragment extends Fragment {
     // ── Chart population ─────────────────────────────────────────────────────
 
     private void populatePieChart(List<CategoryTotal> totals) {
+        if (totals.isEmpty()) {
+            pieChart.setNoDataText("No expenses yet");
+            pieChart.clear();
+            pieChart.invalidate();
+            return;
+        }
+
         List<PieEntry> entries = new ArrayList<>();
         List<Integer> colors = new ArrayList<>();
 
@@ -171,8 +173,8 @@ public class DashboardFragment extends Fragment {
             CategoryTotal ct = totals.get(i);
             String label = catNameMap.containsKey(ct.categoryId)
                     ? catNameMap.get(ct.categoryId)
-                    : "Cat " + ct.categoryId;
-            entries.add(new PieEntry(ct.total, label));
+                    : "Category " + ct.categoryId;
+            entries.add(new PieEntry(ct.total / 100f, label));
             colors.add(CHART_COLORS[i % CHART_COLORS.length]);
         }
 
@@ -185,48 +187,39 @@ public class DashboardFragment extends Fragment {
 
         PieData data = new PieData(dataSet);
         pieChart.setData(data);
+        pieChart.setCenterText("Expenses");
         pieChart.animateY(700);
         pieChart.invalidate();
     }
 
     private void populateBarChart(List<DayTotal> dayTotals) {
-        // Build a map day_bucket → total so we can fill in missing days
-        Map<Long, Long> dayMap = new HashMap<>();
-        long minDay = Long.MAX_VALUE, maxDay = Long.MIN_VALUE;
+        // Build a map of "YYYY-MM-DD" → total
+        Map<String, Long> dayMap = new HashMap<>();
         for (DayTotal dt : dayTotals) {
             dayMap.put(dt.dayBucket, dt.total);
-            if (dt.dayBucket < minDay)
-                minDay = dt.dayBucket;
-            if (dt.dayBucket > maxDay)
-                maxDay = dt.dayBucket;
         }
 
-        // Fill last 7 calendar days
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        long today = cal.getTimeInMillis() / 86_400_000L;
+        SimpleDateFormat keySdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat labelSdf = new SimpleDateFormat("EEE", Locale.getDefault());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE", Locale.getDefault());
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
-        for (int i = 6; i >= 0; i--) {
-            long dayBucket = today - i;
-            float total = dayMap.containsKey(dayBucket) ? dayMap.get(dayBucket) / 100f : 0f;
-            entries.add(new BarEntry(6 - i, total));
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -6);
 
-            cal.setTimeInMillis(dayBucket * 86_400_000L);
-            labels.add(sdf.format(cal.getTime()));
+        for (int i = 0; i < 7; i++) {
+            String key = keySdf.format(cal.getTime());
+            float total = dayMap.containsKey(key) ? dayMap.get(key) / 100f : 0f;
+            entries.add(new BarEntry(i, total));
+            labels.add(labelSdf.format(cal.getTime()));
+            cal.add(Calendar.DAY_OF_YEAR, 1);
         }
 
         BarDataSet dataSet = new BarDataSet(entries, "Daily Expenses ($)");
         dataSet.setColor(0xFF3D8BFF);
         dataSet.setHighlightEnabled(true);
         dataSet.setHighLightColor(0xFF00D084);
-        // dataSet.setBarBorderRadius(6f);
         dataSet.setValueTextColor(Color.WHITE);
         dataSet.setValueTextSize(9f);
 

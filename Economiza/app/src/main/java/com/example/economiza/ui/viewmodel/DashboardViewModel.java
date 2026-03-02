@@ -38,10 +38,7 @@ public class DashboardViewModel extends ViewModel {
         this.totalIncome = getTotalIncome.execute();
         this.categories = getCategories.execute();
 
-        // Pie chart
-        this.expensesByCategory = txRepo.getExpensesByCategory();
-
-        // Bar chart — last 7 days
+        // Analytics Date Range: last 7 days (including today)
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -50,6 +47,11 @@ public class DashboardViewModel extends ViewModel {
         long endOfToday = cal.getTimeInMillis() + 86_400_000L - 1;
         cal.add(Calendar.DAY_OF_YEAR, -6);
         long startOf7DaysAgo = cal.getTimeInMillis();
+
+        // Pie chart — matching the weekly context
+        this.expensesByCategory = txRepo.getExpensesByCategory(startOf7DaysAgo, endOfToday);
+
+        // Bar chart — last 7 days
         this.weeklyExpenses = txRepo.getDailyExpenses(startOf7DaysAgo, endOfToday);
 
         // Net balance

@@ -57,11 +57,18 @@ public interface TransactionDao {
                         "GROUP BY category_id ORDER BY total DESC")
         LiveData<List<CategoryTotal>> getExpensesByCategory();
 
+        /** Sum of expenses grouped by category in a date range. */
+        @Query("SELECT category_id, SUM(amount) AS total " +
+                        "FROM Transactions WHERE is_income = 0 AND date BETWEEN :start AND :end " +
+                        "GROUP BY category_id ORDER BY total DESC")
+        LiveData<List<CategoryTotal>> getExpensesByCategory(long start, long end);
+
         /**
          * Sum of expenses per day bucket in a date range — feeds the Bar Chart.
          * day_bucket = date_millis / 86_400_000 (integer division gives day index).
          */
-        @Query("SELECT (date / 86400000) AS day_bucket, SUM(amount) AS total " +
+        @Query("SELECT strftime('%Y-%m-%d', date / 1000, 'unixepoch', 'localtime') AS day_bucket, SUM(amount) AS total "
+                        +
                         "FROM Transactions WHERE is_income = 0 AND date BETWEEN :start AND :end " +
                         "GROUP BY day_bucket ORDER BY day_bucket ASC")
         LiveData<List<DayTotal>> getDailyExpenses(long start, long end);

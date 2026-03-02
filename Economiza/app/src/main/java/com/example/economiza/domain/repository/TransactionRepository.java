@@ -34,5 +34,7 @@ public interface TransactionRepository {
     // Analytics
     LiveData<List<CategoryTotal>> getExpensesByCategory();
 
+    LiveData<List<CategoryTotal>> getExpensesByCategory(long start, long end);
+
     LiveData<List<DayTotal>> getDailyExpenses(long start, long end);
 }
