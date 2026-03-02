@@ -21,7 +21,7 @@ import com.example.economiza.ui.adapter.ManageCategoryAdapter;
 import com.example.economiza.ui.viewmodel.CategoryViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class ManageCategoriesActivity extends AppCompatActivity
+public class ManageCategoriesActivity extends BaseActivity
         implements ManageCategoryAdapter.Listener {
 
     private CategoryViewModel vm;

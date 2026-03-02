@@ -12,7 +12,9 @@ import com.example.economiza.ui.fragments.SettingsFragment;
 import com.example.economiza.ui.fragments.TransactionsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.economiza.ui.activities.BaseActivity;
+
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

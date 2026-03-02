@@ -1,5 +1,15 @@
 package com.example.economiza;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.example.economiza.data.local.AppDatabase;
+import com.example.economiza.data.local.VaultManager;
+import com.example.economiza.ui.activities.CreateVaultActivity;
+import com.example.economiza.ui.activities.OnboardingActivity;
+import com.example.economiza.ui.activities.SetPinActivity;
+import com.example.economiza.ui.activities.UnlockVaultActivity;
 import android.app.Application;
 
 import com.example.economiza.data.local.AppDatabase;
@@ -37,10 +47,50 @@ public class EconomizaApp extends Application {
     private CategoryRepository categoryRepository;
     private TransactionRepository transactionRepository;
 
+    private int startedActivityCount = 0;
+    private boolean isConfigChange = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
         vaultManager = new VaultManager(this);
+
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity a, Bundle b) {
+            }
+
+            @Override
+            public void onActivityStarted(Activity a) {
+                startedActivityCount++;
+            }
+
+            @Override
+            public void onActivityResumed(Activity a) {
+            }
+
+            @Override
+            public void onActivityPaused(Activity a) {
+            }
+
+            @Override
+            public void onActivityStopped(Activity a) {
+                isConfigChange = a.isChangingConfigurations();
+                startedActivityCount--;
+                if (startedActivityCount == 0 && !isConfigChange) {
+                    // Lock vault when app is backgrounded
+                    lockVault();
+                }
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity a, Bundle s) {
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity a) {
+            }
+        });
     }
 
     /**

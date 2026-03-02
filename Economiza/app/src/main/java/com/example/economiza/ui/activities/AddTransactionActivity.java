@@ -36,7 +36,7 @@ import java.util.Locale;
  * Screen for logging a new income or expense transaction.
  * Includes a live category picker loaded from the encrypted database.
  */
-public class AddTransactionActivity extends AppCompatActivity {
+public class AddTransactionActivity extends BaseActivity {
 
     private TransactionViewModel txViewModel;
     private TextInputEditText etAmount, etDescription;

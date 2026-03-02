@@ -65,10 +65,10 @@ public class VaultManager {
 
         byte[] salt = generateSalt();
         prefs.edit()
-                .putString(KEY_SALT, Base64.encodeToString(salt, Base64.DEFAULT))
+                .putString(KEY_SALT, Base64.encodeToString(salt, Base64.NO_WRAP))
                 .putString(KEY_VERIFY_HASH, deriveVerificationHash(password, salt))
                 .putBoolean(KEY_VAULT_EXISTS, true)
-                .apply();
+                .commit(); // Use commit() to ensure it's on disk before we navigate/exit
 
         return deriveDatabaseKey(password, salt);
     }
@@ -120,9 +120,9 @@ public class VaultManager {
         byte[] salt = generateSalt();
         byte[] hash = pbkdf2(pin, salt, 10_000, 256);
         prefs.edit()
-                .putString(KEY_PIN_SALT, Base64.encodeToString(salt, Base64.DEFAULT))
-                .putString(KEY_PIN_HASH, Base64.encodeToString(hash, Base64.DEFAULT))
-                .apply();
+                .putString(KEY_PIN_SALT, Base64.encodeToString(salt, Base64.NO_WRAP))
+                .putString(KEY_PIN_HASH, Base64.encodeToString(hash, Base64.NO_WRAP))
+                .commit();
     }
 
     /**
@@ -136,9 +136,9 @@ public class VaultManager {
         if (saltStr == null || storedHash == null)
             return false;
 
-        byte[] salt = Base64.decode(saltStr, Base64.DEFAULT);
+        byte[] salt = Base64.decode(saltStr, Base64.NO_WRAP);
         byte[] hash = pbkdf2(pin, salt, 10_000, 256);
-        return constantTimeEquals(storedHash, Base64.encodeToString(hash, Base64.DEFAULT));
+        return constantTimeEquals(storedHash, Base64.encodeToString(hash, Base64.NO_WRAP));
     }
 
     // ─── Private helpers ────────────────────────────────────────────────────────
@@ -147,7 +147,7 @@ public class VaultManager {
         String saltStr = prefs.getString(KEY_SALT, null);
         if (saltStr == null)
             return null;
-        return Base64.decode(saltStr, Base64.DEFAULT);
+        return Base64.decode(saltStr, Base64.NO_WRAP);
     }
 
     private byte[] generateSalt() {
@@ -171,7 +171,7 @@ public class VaultManager {
     private String deriveVerificationHash(String password, byte[] salt) {
         byte[] domainSalt = domainSeparate(salt, "verify");
         byte[] hash = pbkdf2(password, domainSalt, PBKDF2_ITERATIONS, VERIFY_LENGTH_BITS);
-        return Base64.encodeToString(hash, Base64.DEFAULT);
+        return Base64.encodeToString(hash, Base64.NO_WRAP);
     }
 
     /**
@@ -200,11 +200,13 @@ public class VaultManager {
     private boolean constantTimeEquals(String a, String b) {
         if (a == null || b == null)
             return false;
-        if (a.length() != b.length())
-            return false;
         int diff = 0;
-        for (int i = 0; i < a.length(); i++) {
-            diff |= a.charAt(i) ^ b.charAt(i);
+        String s1 = a.trim();
+        String s2 = b.trim();
+        if (s1.length() != s2.length())
+            return false;
+        for (int i = 0; i < s1.length(); i++) {
+            diff |= s1.charAt(i) ^ s2.charAt(i);
         }
         return diff == 0;
     }

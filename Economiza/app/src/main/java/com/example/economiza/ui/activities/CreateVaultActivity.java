@@ -66,8 +66,8 @@ public class CreateVaultActivity extends AppCompatActivity {
     }
 
     private void attemptCreate() {
-        String password = etPassword.getText() != null ? etPassword.getText().toString() : "";
-        String confirm = etConfirm.getText() != null ? etConfirm.getText().toString() : "";
+        String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
+        String confirm = etConfirm.getText() != null ? etConfirm.getText().toString().trim() : "";
 
         tilPassword.setError(null);
         tilConfirm.setError(null);
