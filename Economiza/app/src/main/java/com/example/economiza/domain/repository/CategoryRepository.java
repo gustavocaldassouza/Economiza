@@ -1,7 +1,9 @@
 package com.example.economiza.domain.repository;
 
 import androidx.lifecycle.LiveData;
+
 import com.example.economiza.domain.model.Category;
+
 import java.util.List;
 
 public interface CategoryRepository {
@@ -13,5 +15,7 @@ public interface CategoryRepository {
 
     LiveData<List<Category>> getAllCategories();
 
-    LiveData<String> getCategoryNameById(int id);
+    List<Category> getAllCategoriesSync();
+
+    int getCategoryCount();
 }

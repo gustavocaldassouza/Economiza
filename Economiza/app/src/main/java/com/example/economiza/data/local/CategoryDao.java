@@ -1,5 +1,6 @@
 package com.example.economiza.data.local;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -8,7 +9,6 @@ import androidx.room.Update;
 
 import com.example.economiza.domain.model.Category;
 
-import androidx.lifecycle.LiveData;
 import java.util.List;
 
 @Dao
@@ -22,9 +22,15 @@ public interface CategoryDao {
     @Delete
     void delete(Category category);
 
-    @Query("SELECT * FROM categories")
+    @Query("SELECT * FROM categories ORDER BY name ASC")
     LiveData<List<Category>> getAllCategories();
 
+    @Query("SELECT * FROM categories ORDER BY name ASC")
+    List<Category> getAllCategoriesSync();
+
     @Query("SELECT name FROM categories WHERE id = :id")
-    LiveData<String> getCategoryNameById(int id);
+    String getCategoryNameByIdSync(int id);
+
+    @Query("SELECT COUNT(*) FROM categories")
+    int getCategoryCount();
 }

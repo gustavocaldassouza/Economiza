@@ -1,6 +1,7 @@
 package com.example.economiza.data.local;
 
 import android.content.Context;
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -20,9 +21,10 @@ import net.sqlcipher.database.SupportFactory;
         Budget.class,
         RecurringPayment.class
 }, version = 1, exportSchema = false)
-@TypeConverters({ com.example.economiza.data.local.TypeConverters.class })
+@TypeConverters({ TypeConverters.class })
 public abstract class AppDatabase extends RoomDatabase {
-    private static AppDatabase instance;
+
+    private static volatile AppDatabase instance;
 
     public abstract TransactionDao transactionDao();
 
@@ -32,15 +34,27 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract RecurringPaymentDao recurringPaymentDao();
 
-    public static synchronized AppDatabase getInstance(Context context) {
+    /**
+     * Opens (or creates) the encrypted Room database using the raw key bytes
+     * derived by {@link VaultManager} from the user's password.
+     *
+     * This method MUST be called only after the user has authenticated.
+     * The caller is responsible for providing a valid key.
+     *
+     * @param context  application context
+     * @param keyBytes 32-byte AES-256 key from PBKDF2
+     */
+    public static synchronized AppDatabase getInstance(Context context, byte[] keyBytes) {
         if (instance == null) {
+            // Load native SQLCipher libraries
             SQLiteDatabase.loadLibs(context);
 
-            byte[] passphrase = getOrGenerateDatabaseKey(context);
-            SupportFactory factory = new SupportFactory(passphrase);
+            SupportFactory factory = new SupportFactory(keyBytes);
 
-            instance = Room.databaseBuilder(context.getApplicationContext(),
-                    AppDatabase.class, "economiza_database")
+            instance = Room.databaseBuilder(
+                    context.getApplicationContext(),
+                    AppDatabase.class,
+                    "economiza_vault.db")
                     .openHelperFactory(factory)
                     .fallbackToDestructiveMigration()
                     .build();
@@ -48,34 +62,11 @@ public abstract class AppDatabase extends RoomDatabase {
         return instance;
     }
 
-    private static byte[] getOrGenerateDatabaseKey(Context context) {
-        try {
-            androidx.security.crypto.MasterKey masterKey = new androidx.security.crypto.MasterKey.Builder(context)
-                    .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
-                    .build();
-
-            android.content.SharedPreferences sharedPreferences = androidx.security.crypto.EncryptedSharedPreferences
-                    .create(
-                            context,
-                            "secure_db_prefs",
-                            masterKey,
-                            androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                            androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
-
-            String keyString = sharedPreferences.getString("db_key", null);
-            if (keyString == null) {
-                // Generate a random 256-bit key
-                java.security.SecureRandom secureRandom = new java.security.SecureRandom();
-                byte[] newKey = new byte[32]; // 256 bits
-                secureRandom.nextBytes(newKey);
-
-                keyString = android.util.Base64.encodeToString(newKey, android.util.Base64.DEFAULT);
-                sharedPreferences.edit().putString("db_key", keyString).apply();
-            }
-
-            return android.util.Base64.decode(keyString, android.util.Base64.DEFAULT);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate or retrieve secure database key", e);
+    /** Closes and destroys the current instance (e.g. on lock/sign-out). */
+    public static synchronized void destroyInstance() {
+        if (instance != null && instance.isOpen()) {
+            instance.close();
         }
+        instance = null;
     }
 }

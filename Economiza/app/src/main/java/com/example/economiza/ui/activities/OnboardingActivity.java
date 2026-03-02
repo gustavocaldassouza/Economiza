@@ -2,13 +2,24 @@ package com.example.economiza.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.economiza.MainActivity;
+import com.example.economiza.EconomizaApp;
 import com.example.economiza.R;
 
+/**
+ * Entry point shown on first install.
+ *
+ * • "Create New Vault" → {@link CreateVaultActivity} (sets up password)
+ * • "Open Existing Vault" → {@link UnlockVaultActivity} (enter password)
+ *
+ * If the user returns here after a vault already exists (e.g. they backed out
+ * of
+ * unlock), only the "Open" path is shown as active — "Create" would be
+ * destructive
+ * and is blocked by VaultManager.
+ */
 public class OnboardingActivity extends AppCompatActivity {
 
     @Override
@@ -16,16 +27,23 @@ public class OnboardingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
 
-        findViewById(R.id.card_create_vault).setOnClickListener(v -> {
-            // In a real app, this would initialize a new encrypted database
-            startActivity(new Intent(OnboardingActivity.this, MainActivity.class));
-            finish();
-        });
+        boolean vaultExists = ((EconomizaApp) getApplication())
+                .getVaultManager().vaultExists();
 
-        findViewById(R.id.card_open_vault).setOnClickListener(v -> {
-            // In a real app, this would open a file picker
-            startActivity(new Intent(OnboardingActivity.this, MainActivity.class));
+        // If a vault already exists, skip this screen and go straight to unlock
+        if (vaultExists) {
+            startActivity(new Intent(this, UnlockVaultActivity.class));
             finish();
-        });
+            return;
+        }
+
+        // No vault yet — show both options
+        findViewById(R.id.card_create_vault)
+                .setOnClickListener(v -> startActivity(new Intent(this, CreateVaultActivity.class)));
+
+        // "Open Existing" makes sense if the user previously exported a vault file;
+        // for now it routes to unlock (same password entry flow).
+        findViewById(R.id.card_open_vault)
+                .setOnClickListener(v -> startActivity(new Intent(this, UnlockVaultActivity.class)));
     }
 }

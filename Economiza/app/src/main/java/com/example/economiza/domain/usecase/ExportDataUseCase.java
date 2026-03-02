@@ -9,73 +9,74 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.opencsv.CSVWriter;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ExportDataUseCase {
     private final TransactionRepository repository;
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     public ExportDataUseCase(TransactionRepository repository) {
         this.repository = repository;
     }
 
-    public void executeToCsv(String filePath) throws IOException {
+    public void executeToCsv(File outFile) throws IOException {
         List<Transaction> transactions = repository.getAllTransactionsSync();
 
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            // Write Header
-            String[] header = { "ID", "Amount", "Description", "Date", "Category ID", "Is Income" };
-            writer.writeNext(header);
-
-            // Write Data
-            for (Transaction transaction : transactions) {
-                String[] data = {
-                        String.valueOf(transaction.id),
-                        String.valueOf(transaction.amount),
-                        transaction.description != null ? transaction.description : "",
-                        String.valueOf(transaction.timestamp),
-                        String.valueOf(transaction.categoryId),
-                        String.valueOf(transaction.isIncome)
-                };
-                writer.writeNext(data);
+        try (CSVWriter writer = new CSVWriter(new FileWriter(outFile))) {
+            writer.writeNext(new String[] { "ID", "Type", "Amount (R$)", "Description", "Date", "Category ID" });
+            for (Transaction t : transactions) {
+                writer.writeNext(new String[] {
+                        String.valueOf(t.id),
+                        t.isIncome ? "Income" : "Expense",
+                        String.format(Locale.getDefault(), "%.2f", t.amount / 100.0),
+                        t.description != null ? t.description : "",
+                        sdf.format(new Date(t.timestamp)),
+                        String.valueOf(t.categoryId)
+                });
             }
         } catch (Exception e) {
-            throw new IOException("Failed to export data to CSV", e);
+            throw new IOException("CSV export failed: " + e.getMessage(), e);
         }
     }
 
-    public void executeToPdf(String filePath) throws IOException {
+    public void executeToPdf(File outFile) throws IOException {
         List<Transaction> transactions = repository.getAllTransactionsSync();
 
-        try (PdfWriter writer = new PdfWriter(new FileOutputStream(filePath))) {
-            PdfDocument pdf = new PdfDocument(writer);
+        try (PdfWriter pdfWriter = new PdfWriter(new FileOutputStream(outFile))) {
+            PdfDocument pdf = new PdfDocument(pdfWriter);
             Document document = new Document(pdf);
 
-            document.add(new Paragraph("Economiza - Transaction Report").setBold().setFontSize(18));
+            document.add(new Paragraph("Economiza – Transaction Report")
+                    .setBold().setFontSize(18));
+            document.add(new Paragraph("Generated on " + sdf.format(new Date()))
+                    .setFontSize(10));
+            document.add(new Paragraph(" "));
 
-            float[] columnWidths = { 1, 3, 5, 3, 2 };
-            Table table = new Table(columnWidths);
+            float[] widths = { 1, 3, 5, 3, 2 };
+            Table table = new Table(widths);
+            String[] headers = { "ID", "Amount", "Description", "Date", "Type" };
+            for (String h : headers)
+                table.addCell(h);
 
-            table.addCell("ID");
-            table.addCell("Amount");
-            table.addCell("Description");
-            table.addCell("Date");
-            table.addCell("Type");
-
-            for (Transaction transaction : transactions) {
-                table.addCell(String.valueOf(transaction.id));
-                table.addCell(String.valueOf(transaction.amount));
-                table.addCell(transaction.description != null ? transaction.description : "");
-                table.addCell(String.valueOf(transaction.timestamp));
-                table.addCell(transaction.isIncome ? "Income" : "Expense");
+            for (Transaction t : transactions) {
+                table.addCell(String.valueOf(t.id));
+                table.addCell(String.format(Locale.getDefault(), "R$%.2f", t.amount / 100.0));
+                table.addCell(t.description != null ? t.description : "");
+                table.addCell(sdf.format(new Date(t.timestamp)));
+                table.addCell(t.isIncome ? "Income" : "Expense");
             }
 
             document.add(table);
             document.close();
         } catch (Exception e) {
-            throw new IOException("Failed to export data to PDF", e);
+            throw new IOException("PDF export failed: " + e.getMessage(), e);
         }
     }
 }
