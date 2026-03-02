@@ -19,16 +19,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!-- Color swatch circle -->
+            <View
+                android:id="@+id/view_budget_color"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:background="@drawable/bg_category_swatch"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_budget_category"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txt_budget_category" />
+
             <TextView
                 android:id="@+id/txt_budget_category"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:text="Category"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/txt_budget_spent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/view_budget_color"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -53,14 +64,32 @@
             app:trackCornerRadius="4dp"
             app:trackThickness="8dp" />
 
-        <TextView
-            android:id="@+id/txt_budget_remaining"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="R$0 remaining"
-            android:textColor="@color/accent_green"
-            android:textSize="12sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_budget_remaining"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="R$0 remaining"
+                android:textColor="@color/accent_green"
+                android:textSize="12sp" />
+
+            <!-- Warning label — hidden by default, shown by adapter when >= 80% -->
+            <TextView
+                android:id="@+id/txt_budget_warning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚠ Approaching limit!"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
