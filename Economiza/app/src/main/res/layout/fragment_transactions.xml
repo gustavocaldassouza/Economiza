@@ -15,26 +15,52 @@
             android:orientation="vertical"
             android:paddingBottom="88dp">
 
-            <!-- Header -->
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Header row -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:text="Transactions"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="24dp">
 
-            <TextView
-                android:id="@+id/txt_tx_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="4dp"
-                android:text="All time"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Transactions"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_tx_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="All time"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Export button -->
+                <ImageButton
+                    android:id="@+id/btn_export"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Export transactions"
+                    android:src="@drawable/ic_share"
+                    app:tint="@color/white"
+                    android:padding="8dp" />
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_transactions"

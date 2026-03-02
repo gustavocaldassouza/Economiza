@@ -117,6 +117,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(RecurringPaymentViewModel.class))
             return (T) new RecurringPaymentViewModel(getRecurringPayments, addRecurringPayment, updateRecurringPayment,
                     deleteRecurringPayment, processRecurring);
+        if (modelClass.isAssignableFrom(ExportViewModel.class))
+            return (T) new ExportViewModel(exportData);
         throw new IllegalArgumentException("Unknown ViewModel: " + modelClass.getName());
     }
 }
