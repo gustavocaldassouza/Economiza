@@ -30,7 +30,7 @@ public class ExportDataUseCase {
         List<Transaction> transactions = repository.getAllTransactionsSync();
 
         try (CSVWriter writer = new CSVWriter(new FileWriter(outFile))) {
-            writer.writeNext(new String[] { "ID", "Type", "Amount (R$)", "Description", "Date", "Category ID" });
+            writer.writeNext(new String[] { "ID", "Type", "Amount ($)", "Description", "Date", "Category ID" });
             for (Transaction t : transactions) {
                 writer.writeNext(new String[] {
                         String.valueOf(t.id),
@@ -67,7 +67,7 @@ public class ExportDataUseCase {
 
             for (Transaction t : transactions) {
                 table.addCell(String.valueOf(t.id));
-                table.addCell(String.format(Locale.getDefault(), "R$%.2f", t.amount / 100.0));
+                table.addCell(String.format(Locale.getDefault(), "$%.2f", t.amount / 100.0));
                 table.addCell(t.description != null ? t.description : "");
                 table.addCell(sdf.format(new Date(t.timestamp)));
                 table.addCell(t.isIncome ? "Income" : "Expense");

@@ -40,7 +40,7 @@ public class RecurringAdapter extends RecyclerView.Adapter<RecurringAdapter.View
         h.name.setText(p.description != null ? p.description : "Payment");
         h.frequency.setText(p.frequency != null ? p.frequency.toString() : "Monthly");
         h.due.setText("Due: " + sdf.format(new Date(p.nextDueDate)));
-        h.amount.setText(String.format(Locale.getDefault(), "-R$ %.2f", p.amount / 100.0));
+        h.amount.setText(String.format(Locale.getDefault(), "-$ %.2f", p.amount / 100.0));
     }
 
     @Override

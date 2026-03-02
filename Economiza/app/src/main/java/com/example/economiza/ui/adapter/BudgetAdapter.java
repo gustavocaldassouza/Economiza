@@ -41,7 +41,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         double spent = b.spentSoFar / 100.0;
         double remaining = limit - spent;
 
-        h.spent.setText(String.format(Locale.getDefault(), "R$%.0f / R$%.0f", spent, limit));
+        h.spent.setText(String.format(Locale.getDefault(), "$%.0f / $%.0f", spent, limit));
 
         int progress = limit > 0 ? (int) ((spent / limit) * 100) : 0;
         h.progress.setProgress(Math.min(progress, 100));
@@ -51,9 +51,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         }
 
         if (remaining >= 0) {
-            h.remaining.setText(String.format(Locale.getDefault(), "R$%.2f remaining", remaining));
+            h.remaining.setText(String.format(Locale.getDefault(), "$%.2f remaining", remaining));
         } else {
-            h.remaining.setText(String.format(Locale.getDefault(), "R$%.2f over budget", -remaining));
+            h.remaining.setText(String.format(Locale.getDefault(), "$%.2f over budget", -remaining));
         }
     }
 

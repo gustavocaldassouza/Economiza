@@ -35,7 +35,7 @@
                 android:id="@+id/txt_budget_spent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="R$0 / R$0"
+                android:text="$0 / $0"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="R$0 remaining"
+            android:text="$0 remaining"
             android:textColor="@color/accent_green"
             android:textSize="12sp" />
 

@@ -71,10 +71,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         double amount = t.amount / 100.0;
         if (t.isIncome) {
-            h.amount.setText(String.format(Locale.getDefault(), "+R$ %.2f", amount));
+            h.amount.setText(String.format(Locale.getDefault(), "+$ %.2f", amount));
             h.amount.setTextColor(0xFF00D084); // green
         } else {
-            h.amount.setText(String.format(Locale.getDefault(), "-R$ %.2f", amount));
+            h.amount.setText(String.format(Locale.getDefault(), "-$ %.2f", amount));
             h.amount.setTextColor(0xFFEF5350); // red
         }
 

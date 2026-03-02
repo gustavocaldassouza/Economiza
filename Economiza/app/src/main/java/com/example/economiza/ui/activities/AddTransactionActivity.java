@@ -123,22 +123,25 @@ public class AddTransactionActivity extends BaseActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerCategory.setAdapter(adapter);
 
+            // Pre-select if we already have the ID (from editing)
+            if (selectedCategoryId != 0) {
+                for (int i = 0; i < categoryList.size(); i++) {
+                    if (categoryList.get(i).id == selectedCategoryId) {
+                        spinnerCategory.setSelection(i);
+                        break;
+                    }
+                }
+            } else if (!categoryList.isEmpty()) {
+                selectedCategoryId = categoryList.get(0).id;
+            }
+
             spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     Category selected = categoryList.get(pos);
                     selectedCategoryId = selected.id;
                     // Update the color swatch
-                    if (viewCategoryColor != null) {
-                        GradientDrawable bg = new GradientDrawable();
-                        bg.setShape(GradientDrawable.OVAL);
-                        try {
-                            bg.setColor(Color.parseColor(selected.colorHex));
-                        } catch (Exception e) {
-                            bg.setColor(Color.GRAY);
-                        }
-                        viewCategoryColor.setBackground(bg);
-                    }
+                    updateCategoryColor(selected.colorHex);
                 }
 
                 @Override
@@ -167,11 +170,14 @@ public class AddTransactionActivity extends BaseActivity {
                     setTransactionType(!t.isIncome);
                     selectedCategoryId = t.categoryId;
 
-                    // Set spinner selection
-                    for (int i = 0; i < categoryList.size(); i++) {
-                        if (categoryList.get(i).id == selectedCategoryId) {
-                            spinnerCategory.setSelection(i);
-                            break;
+                    // Set spinner selection if categories are already loaded
+                    if (!categoryList.isEmpty()) {
+                        for (int i = 0; i < categoryList.size(); i++) {
+                            if (categoryList.get(i).id == selectedCategoryId) {
+                                spinnerCategory.setSelection(i);
+                                updateCategoryColor(categoryList.get(i).colorHex);
+                                break;
+                            }
                         }
                     }
                 });
@@ -179,17 +185,30 @@ public class AddTransactionActivity extends BaseActivity {
         }).start();
     }
 
+    private void updateCategoryColor(String colorHex) {
+        if (viewCategoryColor != null) {
+            GradientDrawable bg = new GradientDrawable();
+            bg.setShape(GradientDrawable.OVAL);
+            try {
+                bg.setColor(Color.parseColor(colorHex));
+            } catch (Exception e) {
+                bg.setColor(Color.GRAY);
+            }
+            viewCategoryColor.setBackground(bg);
+        }
+    }
+
     private void setTransactionType(boolean expense) {
         isExpense = expense;
         int blue = getColor(R.color.primary_blue);
-        int transparent = android.graphics.Color.TRANSPARENT;
+        int inactiveColor = getColor(R.color.card_background);
         int white = getColor(R.color.white);
         int grey = getColor(R.color.text_secondary);
 
-        btnExpense.setBackgroundTintList(android.content.res.ColorStateList.valueOf(expense ? blue : transparent));
+        btnExpense.setBackgroundTintList(android.content.res.ColorStateList.valueOf(expense ? blue : inactiveColor));
         btnExpense.setTextColor(expense ? white : grey);
 
-        btnIncome.setBackgroundTintList(android.content.res.ColorStateList.valueOf(expense ? transparent : blue));
+        btnIncome.setBackgroundTintList(android.content.res.ColorStateList.valueOf(expense ? inactiveColor : blue));
         btnIncome.setTextColor(expense ? grey : white);
     }
 

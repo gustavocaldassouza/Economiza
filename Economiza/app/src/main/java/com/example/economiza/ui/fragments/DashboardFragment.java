@@ -86,18 +86,18 @@ public class DashboardFragment extends Fragment {
         // ── Balance card ──────────────────────────────────────────────────────
         viewModel.totalIncome.observe(getViewLifecycleOwner(), income -> {
             if (income != null && txtIncome != null)
-                txtIncome.setText(String.format(Locale.getDefault(), "R$ %.2f", income / 100.0));
+                txtIncome.setText(String.format(Locale.getDefault(), "$ %.2f", income / 100.0));
         });
 
         viewModel.totalExpenses.observe(getViewLifecycleOwner(), expenses -> {
             if (expenses != null && txtExpenses != null)
-                txtExpenses.setText(String.format(Locale.getDefault(), "R$ %.2f", expenses / 100.0));
+                txtExpenses.setText(String.format(Locale.getDefault(), "$ %.2f", expenses / 100.0));
         });
 
         viewModel.netBalance.observe(getViewLifecycleOwner(), balance -> {
             if (balance != null && txtBalance != null) {
                 double balanceReal = balance / 100.0;
-                txtBalance.setText(String.format(Locale.getDefault(), "R$ %.2f", Math.abs(balanceReal)));
+                txtBalance.setText(String.format(Locale.getDefault(), "$ %.2f", Math.abs(balanceReal)));
                 txtBalance.setTextColor(balanceReal >= 0 ? 0xFF00D084 : 0xFFEF5350);
             }
         });
@@ -124,7 +124,7 @@ public class DashboardFragment extends Fragment {
                 barChart.setNoDataText("No data for this week");
                 barChart.invalidate();
                 if (txtSpendingTotal != null)
-                    txtSpendingTotal.setText("R$ 0.00");
+                    txtSpendingTotal.setText("$ 0.00");
                 updateWeeklyRange();
                 return;
             }
@@ -135,7 +135,7 @@ public class DashboardFragment extends Fragment {
                 totalCents += dt.total;
             }
             if (txtSpendingTotal != null) {
-                txtSpendingTotal.setText(String.format(Locale.getDefault(), "R$ %.2f", totalCents / 100.0));
+                txtSpendingTotal.setText(String.format(Locale.getDefault(), "$ %.2f", totalCents / 100.0));
             }
 
             updateWeeklyRange();
@@ -222,7 +222,7 @@ public class DashboardFragment extends Fragment {
             labels.add(sdf.format(cal.getTime()));
         }
 
-        BarDataSet dataSet = new BarDataSet(entries, "Daily Expenses (R$)");
+        BarDataSet dataSet = new BarDataSet(entries, "Daily Expenses ($)");
         dataSet.setColor(0xFF3D8BFF);
         dataSet.setHighlightEnabled(true);
         dataSet.setHighLightColor(0xFF00D084);
