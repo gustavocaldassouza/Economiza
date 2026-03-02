@@ -18,7 +18,6 @@ import com.example.economiza.EconomizaApp;
 import com.example.economiza.R;
 import com.example.economiza.domain.usecase.ExportDataUseCase;
 import com.example.economiza.ui.activities.ManageCategoriesActivity;
-import com.example.economiza.ui.activities.OnboardingActivity;
 
 import java.io.File;
 
@@ -34,19 +33,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Lock vault
-        view.findViewById(R.id.btn_lock_vault).setOnClickListener(v -> {
-            ((EconomizaApp) requireActivity().getApplication()).lockVault();
-            Intent intent = new Intent(requireActivity(), OnboardingActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
-
-        // Change password placeholder
-        view.findViewById(R.id.btn_change_password).setOnClickListener(v -> Toast.makeText(requireContext(),
-                "Change password: lock vault, then create a new one from onboarding.",
-                Toast.LENGTH_LONG).show());
 
         // Export CSV
         view.findViewById(R.id.btn_export_csv).setOnClickListener(v -> exportData(true));

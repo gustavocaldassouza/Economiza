@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.economiza.EconomizaApp;
@@ -20,7 +19,6 @@ import com.example.economiza.domain.model.Category;
 import com.example.economiza.domain.model.CategoryTotal;
 import com.example.economiza.domain.model.DayTotal;
 import com.example.economiza.ui.activities.AddTransactionActivity;
-import com.example.economiza.ui.adapter.CategoryAdapter;
 import com.example.economiza.ui.viewmodel.DashboardViewModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -76,13 +74,6 @@ public class DashboardFragment extends Fragment {
         barChart = view.findViewById(R.id.bar_chart);
         pieChart = view.findViewById(R.id.pie_chart);
         ExtendedFloatingActionButton fab = view.findViewById(R.id.fab_smart_entry);
-
-        // RecyclerView for top categories label strip (optional)
-        RecyclerView rvCategories = view.findViewById(R.id.rv_categories);
-        if (rvCategories != null) {
-            rvCategories.setLayoutManager(new LinearLayoutManager(getContext()));
-            rvCategories.setAdapter(new CategoryAdapter());
-        }
 
         if (fab != null) {
             fab.setOnClickListener(
@@ -212,7 +203,7 @@ public class DashboardFragment extends Fragment {
         dataSet.setColor(0xFF3D8BFF);
         dataSet.setHighlightEnabled(true);
         dataSet.setHighLightColor(0xFF00D084);
-//        dataSet.setBarBorderRadius(6f);
+        // dataSet.setBarBorderRadius(6f);
         dataSet.setValueTextColor(Color.WHITE);
         dataSet.setValueTextSize(9f);
 
