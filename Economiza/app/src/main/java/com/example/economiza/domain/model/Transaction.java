@@ -1,19 +1,13 @@
-package com.example.economiza;
+package com.example.economiza.domain.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(
-    tableName = "Transactions",
-    foreignKeys = @ForeignKey(
-        entity = Category.class,
-        parentColumns = "id",
-        childColumns = "category_id",
-        onDelete = ForeignKey.CASCADE
-    )
-)
+@Entity(tableName = "Transactions", foreignKeys = @ForeignKey(entity = Category.class, parentColumns = "id", childColumns = "category_id", onDelete = ForeignKey.CASCADE), indices = {
+        @Index("category_id") })
 public class Transaction {
 
     @PrimaryKey(autoGenerate = true)
@@ -34,6 +28,6 @@ public class Transaction {
     @ColumnInfo(name = "is_income")
     public boolean isIncome;
 
-    public Transaction(){}
-
+    public Transaction() {
+    }
 }

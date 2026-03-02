@@ -12,14 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Economiza">
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".ui.activities.OnboardingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Economiza">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

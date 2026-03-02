@@ -1,10 +1,15 @@
-package com.example.economiza;
+package com.example.economiza.data.local;
 
 import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+
+import com.example.economiza.domain.model.Budget;
+import com.example.economiza.domain.model.Category;
+import com.example.economiza.domain.model.RecurringPayment;
+import com.example.economiza.domain.model.Transaction;
 
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SupportFactory;
@@ -14,14 +19,17 @@ import net.sqlcipher.database.SupportFactory;
         Category.class,
         Budget.class,
         RecurringPayment.class
-}, version = 1)
-@TypeConverters({com.example.economiza.TypeConverters.class})
+}, version = 1, exportSchema = false)
+@TypeConverters({ com.example.economiza.data.local.TypeConverters.class })
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
 
     public abstract TransactionDao transactionDao();
+
     public abstract CategoryDao categoryDao();
+
     public abstract BudgetDao budgetDao();
+
     public abstract RecurringPaymentDao recurringPaymentDao();
 
     public static synchronized AppDatabase getInstance(Context context) {
@@ -32,7 +40,7 @@ public abstract class AppDatabase extends RoomDatabase {
             SupportFactory factory = new SupportFactory(passphrase);
 
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "economiza_database")
+                    AppDatabase.class, "economiza_database")
                     .openHelperFactory(factory)
                     .fallbackToDestructiveMigration()
                     .build();
@@ -46,13 +54,13 @@ public abstract class AppDatabase extends RoomDatabase {
                     .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
                     .build();
 
-            android.content.SharedPreferences sharedPreferences = androidx.security.crypto.EncryptedSharedPreferences.create(
-                    context,
-                    "secure_db_prefs",
-                    masterKey,
-                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
+            android.content.SharedPreferences sharedPreferences = androidx.security.crypto.EncryptedSharedPreferences
+                    .create(
+                            context,
+                            "secure_db_prefs",
+                            masterKey,
+                            androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                            androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
 
             String keyString = sharedPreferences.getString("db_key", null);
             if (keyString == null) {
@@ -60,7 +68,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 java.security.SecureRandom secureRandom = new java.security.SecureRandom();
                 byte[] newKey = new byte[32]; // 256 bits
                 secureRandom.nextBytes(newKey);
-                
+
                 keyString = android.util.Base64.encodeToString(newKey, android.util.Base64.DEFAULT);
                 sharedPreferences.edit().putString("db_key", keyString).apply();
             }

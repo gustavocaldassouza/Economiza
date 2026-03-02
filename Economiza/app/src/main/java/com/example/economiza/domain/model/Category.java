@@ -1,5 +1,4 @@
-package com.example.economiza;
-
+package com.example.economiza.domain.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -18,6 +17,4 @@ public class Category {
 
     @ColumnInfo(name = "color_hex")
     public String colorHex;
-
-
 }

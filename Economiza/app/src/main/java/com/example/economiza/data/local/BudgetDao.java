@@ -1,4 +1,4 @@
-package com.example.economiza;
+package com.example.economiza.data.local;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,8 +6,10 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.economiza.domain.model.Budget;
+
+import androidx.lifecycle.LiveData;
 import java.util.List;
-import kotlinx.coroutines.flow.Flow;
 
 @Dao
 public interface BudgetDao {
@@ -21,8 +23,8 @@ public interface BudgetDao {
     void delete(Budget budget);
 
     @Query("SELECT * FROM budgets")
-    Flow<List<Budget>> getAllBudgets();
+    LiveData<List<Budget>> getAllBudgets();
 
     @Query("SELECT * FROM budgets WHERE category_id = :catId")
-    Flow<Budget> getBudgetForCategory(int catId);
+    LiveData<Budget> getBudgetForCategory(int catId);
 }

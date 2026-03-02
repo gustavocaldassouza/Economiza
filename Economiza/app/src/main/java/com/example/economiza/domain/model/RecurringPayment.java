@@ -1,20 +1,13 @@
-package com.example.economiza;
-
+package com.example.economiza.domain.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(
-    tableName = "recurring_payments",
-    foreignKeys = @ForeignKey(
-        entity = Category.class,
-        parentColumns = "id",
-        childColumns = "category_id",
-        onDelete = ForeignKey.CASCADE
-    )
-)
+@Entity(tableName = "recurring_payments", foreignKeys = @ForeignKey(entity = Category.class, parentColumns = "id", childColumns = "category_id", onDelete = ForeignKey.CASCADE), indices = {
+        @Index("category_id") })
 public class RecurringPayment {
     @PrimaryKey(autoGenerate = true)
     public int id;
@@ -37,5 +30,6 @@ public class RecurringPayment {
     @ColumnInfo(name = "category_id")
     public int categoryId;
 
-    public RecurringPayment(){}
+    public RecurringPayment() {
+    }
 }
