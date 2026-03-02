@@ -1,7 +1,11 @@
 package com.example.economiza.domain.repository;
 
 import androidx.lifecycle.LiveData;
+
+import com.example.economiza.domain.model.CategoryTotal;
+import com.example.economiza.domain.model.DayTotal;
 import com.example.economiza.domain.model.Transaction;
+
 import java.util.List;
 
 public interface TransactionRepository {
@@ -24,4 +28,9 @@ public interface TransactionRepository {
     LiveData<List<Transaction>> getTransactionsByDateRange(long startDate, long endDate);
 
     LiveData<List<Transaction>> getTransactionsByCategoryInDateRange(int catId, long start, long end);
+
+    // Analytics
+    LiveData<List<CategoryTotal>> getExpensesByCategory();
+
+    LiveData<List<DayTotal>> getDailyExpenses(long start, long end);
 }

@@ -9,12 +9,14 @@ import com.example.economiza.domain.usecase.AddCategoryUseCase;
 import com.example.economiza.domain.usecase.AddRecurringPaymentUseCase;
 import com.example.economiza.domain.usecase.AddTransactionUseCase;
 import com.example.economiza.domain.usecase.DeleteCategoryUseCase;
+import com.example.economiza.domain.usecase.UpdateCategoryUseCase;
 import com.example.economiza.domain.usecase.DeleteTransactionUseCase;
 import com.example.economiza.domain.usecase.ExportDataUseCase;
 import com.example.economiza.domain.usecase.GetBudgetsUseCase;
 import com.example.economiza.domain.usecase.GetCategoriesUseCase;
 import com.example.economiza.domain.usecase.GetRecurringPaymentsUseCase;
 import com.example.economiza.domain.usecase.GetTransactionsUseCase;
+import com.example.economiza.domain.repository.TransactionRepository;
 import com.example.economiza.domain.usecase.GetTotalExpensesUseCase;
 import com.example.economiza.domain.usecase.GetTotalIncomeUseCase;
 
@@ -25,8 +27,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final DeleteTransactionUseCase deleteTransaction;
     private final GetTotalExpensesUseCase getTotalExpenses;
     private final GetTotalIncomeUseCase getTotalIncome;
+    private final TransactionRepository txRepo;
     private final GetCategoriesUseCase getCategories;
     private final AddCategoryUseCase addCategory;
+    private final UpdateCategoryUseCase updateCategory;
     private final DeleteCategoryUseCase deleteCategory;
     private final GetBudgetsUseCase getBudgets;
     private final AddBudgetUseCase addBudget;
@@ -40,8 +44,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             DeleteTransactionUseCase deleteTransaction,
             GetTotalExpensesUseCase getTotalExpenses,
             GetTotalIncomeUseCase getTotalIncome,
+            TransactionRepository txRepo,
             GetCategoriesUseCase getCategories,
             AddCategoryUseCase addCategory,
+            UpdateCategoryUseCase updateCategory,
             DeleteCategoryUseCase deleteCategory,
             GetBudgetsUseCase getBudgets,
             AddBudgetUseCase addBudget,
@@ -53,8 +59,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.deleteTransaction = deleteTransaction;
         this.getTotalExpenses = getTotalExpenses;
         this.getTotalIncome = getTotalIncome;
+        this.txRepo = txRepo;
         this.getCategories = getCategories;
         this.addCategory = addCategory;
+        this.updateCategory = updateCategory;
         this.deleteCategory = deleteCategory;
         this.getBudgets = getBudgets;
         this.addBudget = addBudget;
@@ -68,11 +76,13 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(DashboardViewModel.class))
-            return (T) new DashboardViewModel(getTotalExpenses, getTotalIncome);
+            return (T) new DashboardViewModel(getTotalExpenses, getTotalIncome, txRepo, getCategories);
+
         if (modelClass.isAssignableFrom(TransactionViewModel.class))
             return (T) new TransactionViewModel(getTransactions, addTransaction);
         if (modelClass.isAssignableFrom(CategoryViewModel.class))
-            return (T) new CategoryViewModel(getCategories, addCategory, deleteCategory);
+            return (T) new CategoryViewModel(getCategories, addCategory, updateCategory, deleteCategory);
+
         if (modelClass.isAssignableFrom(BudgetViewModel.class))
             return (T) new BudgetViewModel(getBudgets, addBudget);
         if (modelClass.isAssignableFrom(RecurringPaymentViewModel.class))

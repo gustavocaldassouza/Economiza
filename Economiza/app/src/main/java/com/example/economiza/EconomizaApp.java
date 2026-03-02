@@ -17,6 +17,7 @@ import com.example.economiza.domain.usecase.AddCategoryUseCase;
 import com.example.economiza.domain.usecase.AddRecurringPaymentUseCase;
 import com.example.economiza.domain.usecase.AddTransactionUseCase;
 import com.example.economiza.domain.usecase.DeleteCategoryUseCase;
+import com.example.economiza.domain.usecase.UpdateCategoryUseCase;
 import com.example.economiza.domain.usecase.DeleteTransactionUseCase;
 import com.example.economiza.domain.usecase.ExportDataUseCase;
 import com.example.economiza.domain.usecase.GetBudgetsUseCase;
@@ -66,6 +67,7 @@ public class EconomizaApp extends Application {
         GetTotalIncomeUseCase getTotalIncome = new GetTotalIncomeUseCase(transactionRepository);
         GetCategoriesUseCase getCategories = new GetCategoriesUseCase(categoryRepository);
         AddCategoryUseCase addCategory = new AddCategoryUseCase(categoryRepository);
+        UpdateCategoryUseCase updateCategory = new UpdateCategoryUseCase(categoryRepository);
         DeleteCategoryUseCase deleteCategory = new DeleteCategoryUseCase(categoryRepository);
         GetBudgetsUseCase getBudgets = new GetBudgetsUseCase(budgetRepository);
         AddBudgetUseCase addBudget = new AddBudgetUseCase(budgetRepository);
@@ -76,7 +78,8 @@ public class EconomizaApp extends Application {
         viewModelFactory = new ViewModelFactory(
                 getTransactions, addTransaction, deleteTransaction,
                 getTotalExpenses, getTotalIncome,
-                getCategories, addCategory, deleteCategory,
+                transactionRepository,
+                getCategories, addCategory, updateCategory, deleteCategory,
                 getBudgets, addBudget,
                 getRecurringPayments, addRecurringPayment,
                 exportDataUseCase);

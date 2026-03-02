@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.economiza.EconomizaApp;
 import com.example.economiza.R;
 import com.example.economiza.domain.usecase.ExportDataUseCase;
+import com.example.economiza.ui.activities.ManageCategoriesActivity;
 import com.example.economiza.ui.activities.OnboardingActivity;
 
 import java.io.File;
@@ -53,9 +54,9 @@ public class SettingsFragment extends Fragment {
         // Export PDF
         view.findViewById(R.id.btn_export_pdf).setOnClickListener(v -> exportData(false));
 
-        // Manage categories
-        view.findViewById(R.id.btn_manage_categories).setOnClickListener(
-                v -> Toast.makeText(requireContext(), "Category management coming soon!", Toast.LENGTH_SHORT).show());
+        // Manage categories → real activity
+        view.findViewById(R.id.btn_manage_categories)
+                .setOnClickListener(v -> startActivity(new Intent(requireActivity(), ManageCategoriesActivity.class)));
     }
 
     private void exportData(boolean asCsv) {

@@ -220,6 +220,62 @@
 
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Category -->
+    <TextView
+        android:id="@+id/txt_category_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_large"
+        android:layout_marginTop="24dp"
+        android:text="CATEGORY"
+        android:textColor="@color/text_secondary"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_date" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_large"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_large"
+        app:cardBackgroundColor="@color/card_background"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_category_label"
+        app:strokeColor="@color/primary_blue"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <View
+                android:id="@+id/view_category_color"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/circle_color_swatch" />
+
+            <Spinner
+                android:id="@+id/spinner_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:popupBackground="@color/card_background"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <!-- OCR Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_scan_receipt"
@@ -236,7 +292,7 @@
         app:strokeWidth="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_date" />
+        app:layout_constraintTop_toBottomOf="@id/card_category" />
 
     <!-- Save Button -->
     <com.google.android.material.button.MaterialButton

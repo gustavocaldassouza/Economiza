@@ -251,61 +251,53 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/txt_spending_total_val" />
 
-                    <!-- Simplified Bar Chart Placeholder -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_marginTop="24dp"
-                        android:gravity="bottom"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent">
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:background="@drawable/chart_bar_default" />
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="80dp"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:background="@drawable/chart_bar_default" />
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:background="@drawable/chart_bar_default" />
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:background="@drawable/chart_bar_primary" />
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="60dp"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:background="@drawable/chart_bar_default" />
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="30dp"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:background="@drawable/chart_bar_default" />
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="45dp"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:background="@drawable/chart_bar_default" />
-
-                    </LinearLayout>
+            <!-- Real MPAndroidChart BarChart -->
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/bar_chart"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Spending by Category (Pie Chart) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_pie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_marginEnd="@dimen/margin_large"
+                app:cardBackgroundColor="@color/card_background"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation"
+                app:layout_constraintTop_toBottomOf="@id/card_spending"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Spending by Category"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pie_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp"
+                        android:layout_marginTop="12dp" />
+
+                </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
