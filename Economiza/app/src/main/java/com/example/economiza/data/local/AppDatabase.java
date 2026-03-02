@@ -21,7 +21,7 @@ import net.sqlcipher.database.SupportFactory;
         Budget.class,
         RecurringPayment.class
 }, version = 1, exportSchema = false)
-@TypeConverters({ TypeConverters.class })
+@TypeConverters({ AppTypeConverters.class })
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase instance;
