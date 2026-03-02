@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/card_background"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Color swatch -->
+        <View
+            android:id="@+id/view_cat_color"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circle_color_swatch"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Category name -->
+        <TextView
+            android:id="@+id/txt_cat_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Category"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/txt_cat_icon"
+            app:layout_constraintEnd_toStartOf="@+id/btn_cat_edit"
+            app:layout_constraintStart_toEndOf="@id/view_cat_color"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_cat_icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="2dp"
+            android:text="icon name"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_cat_edit"
+            app:layout_constraintStart_toEndOf="@id/view_cat_color"
+            app:layout_constraintTop_toBottomOf="@id/txt_cat_name" />
+
+        <!-- Edit -->
+        <ImageView
+            android:id="@+id/btn_cat_edit"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="Edit category"
+            android:padding="4dp"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_cat_delete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/primary_blue" />
+
+        <!-- Delete -->
+        <ImageView
+            android:id="@+id/btn_cat_delete"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="Delete category"
+            android:padding="4dp"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#EF5350" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

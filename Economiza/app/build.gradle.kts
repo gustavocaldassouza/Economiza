@@ -41,4 +41,26 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    annotationProcessor(libs.androidx.room.compiler)
+    implementation(libs.sqlcipher)
+    implementation(libs.sqlite)
+    implementation(libs.security.crypto)
+
+    // Architecture
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+
+    // OCR
+    implementation(libs.mlkit.text.recognition)
+
+    // Charts
+    implementation(libs.mpandroidchart)
+
+    // Export
+    implementation(libs.opencsv)
+    implementation(libs.itext7.core)
 }

@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="background_deep">#0A0E1A</color>
+    <color name="card_background">#151C2C</color>
+    <color name="primary_blue">#3D8BFF</color>
+    <color name="primary_blue_glow">#203D8BFF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8E97A8</color>
+    <color name="accent_green">#00D084</color>
+    <color name="accent_orange">#FF8A65</color>
+    <color name="accent_yellow">#FFD54F</color>
+
+    <!-- Light Theme Colors -->
+    <color name="colorPrimary">#09814A</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorPrimaryContainer">#8DF7B4</color>
+    <color name="colorOnPrimaryContainer">#00210E</color>
+    
+    <color name="colorSecondary">#036666</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+    
+    <color name="colorBackground">#F8F9FA</color>
+    <color name="colorOnBackground">#1A1C18</color>
+    
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorOnSurface">#1A1C18</color>
+    <color name="colorSurfaceVariant">#DFE4D7</color>
+    <color name="colorOnSurfaceVariant">#43483E</color>
+    
+    <color name="colorError">#BA1A1A</color>
+    <color name="colorOnError">#FFFFFF</color>
+
+    <!-- Base generic colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

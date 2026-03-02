@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- IDs for programmatically-created views in RecurringFragment dialogs -->
+    <item name="et_recurring_name"      type="id" />
+    <item name="et_recurring_amount"    type="id" />
+    <item name="sp_recurring_day"       type="id" />
+    <item name="sp_recurring_frequency" type="id" />
+    <item name="sp_recurring_category"  type="id" />
+</resources>

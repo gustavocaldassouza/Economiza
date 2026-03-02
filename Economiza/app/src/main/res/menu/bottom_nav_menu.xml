@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard" />
+    <item
+        android:id="@+id/nav_transactions"
+        android:icon="@drawable/ic_transactions"
+        android:title="Transactions" />
+    <item
+        android:id="@+id/nav_budgets"
+        android:icon="@drawable/ic_budget"
+        android:title="Budgets" />
+    <item
+        android:id="@+id/nav_recurring"
+        android:icon="@drawable/ic_recurring"
+        android:title="Recurring" />
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings" />
+</menu>
