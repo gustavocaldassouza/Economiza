@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.economiza.EconomizaApp;
 import com.example.economiza.R;
 import com.example.economiza.domain.model.Budget;
+import com.example.economiza.domain.model.BudgetListItem;
 import com.example.economiza.ui.adapter.BudgetAdapter;
 import com.example.economiza.ui.viewmodel.BudgetViewModel;
 import com.google.android.material.button.MaterialButton;
@@ -46,9 +48,11 @@ public class BudgetFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView rv = view.findViewById(R.id.rv_budgets);
+        TextView txtEmpty = view.findViewById(R.id.txt_empty_budgets);
         MaterialButton btnAdd = view.findViewById(R.id.btn_add_budget);
 
         adapter = new BudgetAdapter();
+        adapter.setOnBudgetClickListener(item -> showBudgetOptionsDialog(item));
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
 
@@ -57,8 +61,16 @@ public class BudgetFragment extends Fragment {
                 .get(BudgetViewModel.class);
 
         vm.budgets.observe(getViewLifecycleOwner(), budgets -> {
-            if (budgets != null)
+            if (budgets != null) {
                 adapter.setBudgets(budgets);
+                if (budgets.isEmpty()) {
+                    txtEmpty.setVisibility(View.VISIBLE);
+                    rv.setVisibility(View.GONE);
+                } else {
+                    txtEmpty.setVisibility(View.GONE);
+                    rv.setVisibility(View.VISIBLE);
+                }
+            }
         });
 
         vm.categories.observe(getViewLifecycleOwner(), categories -> {
@@ -96,7 +108,7 @@ public class BudgetFragment extends Fragment {
         TextInputLayout tilLimit = new TextInputLayout(requireContext(), null,
                 com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox);
         tilLimit.setHint("Monthly Limit ($)");
-//        tilLimit.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINED);
+        // tilLimit.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINED);
         tilLimit.setBoxCornerRadii(16f, 16f, 16f, 16f);
         TextInputEditText etLimit = new TextInputEditText(tilLimit.getContext());
         etLimit.setInputType(
@@ -132,6 +144,62 @@ public class BudgetFragment extends Fragment {
                     vm.addBudget(budget);
                     Toast.makeText(requireContext(), "Budget created for " + selectedCat.name, Toast.LENGTH_SHORT)
                             .show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void showBudgetOptionsDialog(BudgetListItem item) {
+        String[] options = { "Edit", "Delete" };
+        new AlertDialog.Builder(requireContext())
+                .setTitle(item.categoryName != null ? item.categoryName : "Budget Options")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        showEditBudgetDialog(item);
+                    } else {
+                        new AlertDialog.Builder(requireContext())
+                                .setTitle("Delete Budget")
+                                .setMessage("Are you sure you want to delete this budget?")
+                                .setPositiveButton("Delete", (d, w) -> {
+                                    vm.deleteBudget(item.budget);
+                                    Toast.makeText(requireContext(), "Budget deleted", Toast.LENGTH_SHORT).show();
+                                })
+                                .setNegativeButton("Cancel", null)
+                                .show();
+                    }
+                })
+                .show();
+    }
+
+    private void showEditBudgetDialog(BudgetListItem item) {
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(requireContext());
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setPadding(64, 32, 64, 0);
+
+        TextInputLayout tilLimit = new TextInputLayout(requireContext(), null,
+                com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox);
+        tilLimit.setHint("Monthly Limit ($)");
+        tilLimit.setBoxCornerRadii(16f, 16f, 16f, 16f);
+        TextInputEditText etLimit = new TextInputEditText(tilLimit.getContext());
+        etLimit.setInputType(
+                android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        etLimit.setText(String.valueOf(item.budget.monthlyLimit / 100.0));
+        tilLimit.addView(etLimit);
+
+        layout.addView(tilLimit);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Edit Budget: " + item.categoryName)
+                .setView(layout)
+                .setPositiveButton("Update", (d, w) -> {
+                    String limitStr = etLimit.getText().toString().trim();
+                    if (limitStr.isEmpty()) {
+                        Toast.makeText(requireContext(), "Enter a limit", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    item.budget.monthlyLimit = Math.round(Double.parseDouble(limitStr) * 100);
+                    vm.updateBudget(item.budget);
+                    Toast.makeText(requireContext(), "Budget updated", Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

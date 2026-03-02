@@ -17,8 +17,16 @@ import java.util.List;
 import java.util.Locale;
 
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder> {
+    public interface OnBudgetClickListener {
+        void onBudgetClick(BudgetListItem budget);
+    }
 
     private List<BudgetListItem> budgets = new ArrayList<>();
+    private OnBudgetClickListener listener;
+
+    public void setOnBudgetClickListener(OnBudgetClickListener listener) {
+        this.listener = listener;
+    }
 
     public void setBudgets(List<BudgetListItem> budgets) {
         this.budgets = budgets;
@@ -61,6 +69,12 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
             h.remaining.setText(String.format(Locale.getDefault(), "$%.2f over budget", -remaining));
             h.remaining.setTextColor(0xFFEF5350);
         }
+
+        h.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onBudgetClick(item);
+            }
+        });
     }
 
     @Override

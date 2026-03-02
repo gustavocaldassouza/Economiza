@@ -12,6 +12,8 @@ import com.example.economiza.domain.usecase.DeleteCategoryUseCase;
 import com.example.economiza.domain.usecase.UpdateCategoryUseCase;
 import com.example.economiza.domain.usecase.DeleteTransactionUseCase;
 import com.example.economiza.domain.usecase.UpdateTransactionUseCase;
+import com.example.economiza.domain.usecase.UpdateBudgetUseCase;
+import com.example.economiza.domain.usecase.DeleteBudgetUseCase;
 import com.example.economiza.domain.usecase.GetTransactionByIdUseCase;
 import com.example.economiza.domain.usecase.ExportDataUseCase;
 import com.example.economiza.domain.usecase.GetBudgetsUseCase;
@@ -38,6 +40,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final DeleteCategoryUseCase deleteCategory;
     private final GetBudgetsUseCase getBudgets;
     private final AddBudgetUseCase addBudget;
+    private final UpdateBudgetUseCase updateBudget;
+    private final DeleteBudgetUseCase deleteBudget;
     private final GetRecurringPaymentsUseCase getRecurringPayments;
     private final AddRecurringPaymentUseCase addRecurringPayment;
     private final ExportDataUseCase exportData;
@@ -57,6 +61,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             DeleteCategoryUseCase deleteCategory,
             GetBudgetsUseCase getBudgets,
             AddBudgetUseCase addBudget,
+            UpdateBudgetUseCase updateBudget,
+            DeleteBudgetUseCase deleteBudget,
             GetRecurringPaymentsUseCase getRecurringPayments,
             AddRecurringPaymentUseCase addRecurringPayment,
             ExportDataUseCase exportData) {
@@ -74,6 +80,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.deleteCategory = deleteCategory;
         this.getBudgets = getBudgets;
         this.addBudget = addBudget;
+        this.updateBudget = updateBudget;
+        this.deleteBudget = deleteBudget;
         this.getRecurringPayments = getRecurringPayments;
         this.addRecurringPayment = addRecurringPayment;
         this.exportData = exportData;
@@ -92,7 +100,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new CategoryViewModel(getCategories, addCategory, updateCategory, deleteCategory);
 
         if (modelClass.isAssignableFrom(BudgetViewModel.class))
-            return (T) new BudgetViewModel(getBudgets, addBudget, getCategories);
+            return (T) new BudgetViewModel(getBudgets, addBudget, updateBudget, deleteBudget, getCategories);
         if (modelClass.isAssignableFrom(RecurringPaymentViewModel.class))
             return (T) new RecurringPaymentViewModel(getRecurringPayments, addRecurringPayment);
         throw new IllegalArgumentException("Unknown ViewModel: " + modelClass.getName());
