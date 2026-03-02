@@ -48,6 +48,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         notifyDataSetChanged();
     }
 
+    /**
+     * Returns the transaction at the given adapter position — used by
+     * swipe-to-delete.
+     */
+    public Transaction getTransactionAt(int position) {
+        return transactions.get(position);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -44,7 +44,7 @@ public class AddTransactionActivity extends BaseActivity {
     private TransactionViewModel txViewModel;
     private TextInputEditText etAmount, etDescription;
     private TextView txtDate;
-    private MaterialButton btnExpense, btnIncome;
+    private MaterialButton btnExpense, btnIncome, btnDelete;
     private Spinner spinnerCategory;
     private View viewCategoryColor;
 
@@ -67,6 +67,7 @@ public class AddTransactionActivity extends BaseActivity {
         btnIncome = findViewById(R.id.btn_income);
         spinnerCategory = findViewById(R.id.spinner_category);
         viewCategoryColor = findViewById(R.id.view_category_color);
+        btnDelete = findViewById(R.id.btn_delete);
 
         // ViewModels
         ViewModelFactory factory = ((EconomizaApp) getApplication()).getViewModelFactory();
@@ -154,6 +155,9 @@ public class AddTransactionActivity extends BaseActivity {
         editingTransactionId = getIntent().getIntExtra("EXTRA_TRANSACTION_ID", -1);
         if (editingTransactionId != -1) {
             ((TextView) findViewById(R.id.txt_title)).setText("Edit Transaction");
+            // Show and wire the delete button only in edit mode
+            btnDelete.setVisibility(View.VISIBLE);
+            btnDelete.setOnClickListener(v -> confirmDelete());
             loadTransactionForEditing();
         }
     }
@@ -273,5 +277,21 @@ public class AddTransactionActivity extends BaseActivity {
 
     private String getText(TextInputEditText view) {
         return view.getText() != null ? view.getText().toString().trim() : "";
+    }
+
+    private void confirmDelete() {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Delete Transaction")
+                .setMessage("Are you sure you want to permanently delete this transaction?")
+                .setPositiveButton("Delete", (d, w) -> {
+                    // Build a minimal Transaction with just the ID so Room can find and delete it
+                    Transaction t = new Transaction();
+                    t.id = editingTransactionId;
+                    txViewModel.deleteTransaction(t);
+                    Toast.makeText(this, "Transaction deleted", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

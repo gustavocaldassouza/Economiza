@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.economiza.domain.model.Transaction;
 import com.example.economiza.domain.usecase.AddTransactionUseCase;
+import com.example.economiza.domain.usecase.DeleteTransactionUseCase;
 import com.example.economiza.domain.usecase.UpdateTransactionUseCase;
 import com.example.economiza.domain.usecase.GetTransactionByIdUseCase;
 import com.example.economiza.domain.usecase.GetTransactionsUseCase;
@@ -15,6 +16,7 @@ public class TransactionViewModel extends ViewModel {
     private final GetTransactionsUseCase getTransactionsUseCase;
     private final AddTransactionUseCase addTransactionUseCase;
     private final UpdateTransactionUseCase updateTransactionUseCase;
+    private final DeleteTransactionUseCase deleteTransactionUseCase;
     private final GetTransactionByIdUseCase getTransactionByIdUseCase;
 
     public final LiveData<List<Transaction>> transactions;
@@ -22,10 +24,12 @@ public class TransactionViewModel extends ViewModel {
     public TransactionViewModel(GetTransactionsUseCase getTransactionsUseCase,
             AddTransactionUseCase addTransactionUseCase,
             UpdateTransactionUseCase updateTransactionUseCase,
+            DeleteTransactionUseCase deleteTransactionUseCase,
             GetTransactionByIdUseCase getTransactionByIdUseCase) {
         this.getTransactionsUseCase = getTransactionsUseCase;
         this.addTransactionUseCase = addTransactionUseCase;
         this.updateTransactionUseCase = updateTransactionUseCase;
+        this.deleteTransactionUseCase = deleteTransactionUseCase;
         this.getTransactionByIdUseCase = getTransactionByIdUseCase;
         this.transactions = getTransactionsUseCase.execute();
     }
@@ -43,6 +47,15 @@ public class TransactionViewModel extends ViewModel {
         new Thread(() -> {
             try {
                 updateTransactionUseCase.execute(transaction);
+            } catch (Exception e) {
+            }
+        }).start();
+    }
+
+    public void deleteTransaction(Transaction transaction) {
+        new Thread(() -> {
+            try {
+                deleteTransactionUseCase.execute(transaction);
             } catch (Exception e) {
             }
         }).start();

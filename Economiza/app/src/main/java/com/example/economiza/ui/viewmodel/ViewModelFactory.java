@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.economiza.domain.usecase.AddBudgetUseCase;
+import com.example.economiza.domain.usecase.DeleteRecurringPaymentUseCase;
+import com.example.economiza.domain.usecase.ProcessRecurringPaymentsUseCase;
+import com.example.economiza.domain.usecase.UpdateRecurringPaymentUseCase;
 import com.example.economiza.domain.usecase.AddCategoryUseCase;
 import com.example.economiza.domain.usecase.AddRecurringPaymentUseCase;
 import com.example.economiza.domain.usecase.AddTransactionUseCase;
@@ -44,6 +47,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final DeleteBudgetUseCase deleteBudget;
     private final GetRecurringPaymentsUseCase getRecurringPayments;
     private final AddRecurringPaymentUseCase addRecurringPayment;
+    private final UpdateRecurringPaymentUseCase updateRecurringPayment;
+    private final DeleteRecurringPaymentUseCase deleteRecurringPayment;
+    private final ProcessRecurringPaymentsUseCase processRecurring;
     private final ExportDataUseCase exportData;
 
     public ViewModelFactory(
@@ -65,6 +71,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             DeleteBudgetUseCase deleteBudget,
             GetRecurringPaymentsUseCase getRecurringPayments,
             AddRecurringPaymentUseCase addRecurringPayment,
+            UpdateRecurringPaymentUseCase updateRecurringPayment,
+            DeleteRecurringPaymentUseCase deleteRecurringPayment,
+            ProcessRecurringPaymentsUseCase processRecurring,
             ExportDataUseCase exportData) {
         this.getTransactions = getTransactions;
         this.addTransaction = addTransaction;
@@ -84,6 +93,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.deleteBudget = deleteBudget;
         this.getRecurringPayments = getRecurringPayments;
         this.addRecurringPayment = addRecurringPayment;
+        this.updateRecurringPayment = updateRecurringPayment;
+        this.deleteRecurringPayment = deleteRecurringPayment;
+        this.processRecurring = processRecurring;
         this.exportData = exportData;
     }
 
@@ -95,14 +107,16 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new DashboardViewModel(getTotalExpenses, getTotalIncome, txRepo, getCategories);
 
         if (modelClass.isAssignableFrom(TransactionViewModel.class))
-            return (T) new TransactionViewModel(getTransactions, addTransaction, updateTransaction, getTransactionById);
+            return (T) new TransactionViewModel(getTransactions, addTransaction, updateTransaction, deleteTransaction,
+                    getTransactionById);
         if (modelClass.isAssignableFrom(CategoryViewModel.class))
             return (T) new CategoryViewModel(getCategories, addCategory, updateCategory, deleteCategory);
 
         if (modelClass.isAssignableFrom(BudgetViewModel.class))
             return (T) new BudgetViewModel(getBudgets, addBudget, updateBudget, deleteBudget, getCategories);
         if (modelClass.isAssignableFrom(RecurringPaymentViewModel.class))
-            return (T) new RecurringPaymentViewModel(getRecurringPayments, addRecurringPayment);
+            return (T) new RecurringPaymentViewModel(getRecurringPayments, addRecurringPayment, updateRecurringPayment,
+                    deleteRecurringPayment, processRecurring);
         throw new IllegalArgumentException("Unknown ViewModel: " + modelClass.getName());
     }
 }

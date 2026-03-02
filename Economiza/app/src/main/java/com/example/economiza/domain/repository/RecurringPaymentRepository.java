@@ -14,4 +14,7 @@ public interface RecurringPaymentRepository {
     LiveData<List<RecurringPayment>> getAllRecurringPayments();
 
     LiveData<List<RecurringPayment>> getActiveRecurringPayments();
+
+    /** Synchronous – call only from a background thread. */
+    List<RecurringPayment> getActiveRecurringPaymentsSync();
 }

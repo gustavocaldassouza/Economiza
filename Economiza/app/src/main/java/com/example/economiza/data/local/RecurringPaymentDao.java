@@ -28,4 +28,8 @@ public interface RecurringPaymentDao {
 
     @Query("SELECT * FROM recurring_payments WHERE is_active = 1")
     LiveData<List<RecurringPayment>> getActiveRecurringPayments();
+
+    /** Synchronous – for use on background threads (e.g. auto-post scheduler). */
+    @Query("SELECT * FROM recurring_payments WHERE is_active = 1")
+    List<RecurringPayment> getActiveRecurringPaymentsSync();
 }

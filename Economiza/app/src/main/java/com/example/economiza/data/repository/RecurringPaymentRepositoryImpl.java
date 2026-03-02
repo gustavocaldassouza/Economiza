@@ -38,4 +38,9 @@ public class RecurringPaymentRepositoryImpl implements RecurringPaymentRepositor
     public LiveData<List<RecurringPayment>> getActiveRecurringPayments() {
         return recurringPaymentDao.getActiveRecurringPayments();
     }
+
+    @Override
+    public List<RecurringPayment> getActiveRecurringPaymentsSync() {
+        return recurringPaymentDao.getActiveRecurringPaymentsSync();
+    }
 }

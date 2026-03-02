@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <!-- Payment name -->
         <TextView
             android:id="@+id/txt_recurring_name"
             android:layout_width="0dp"
@@ -26,6 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Frequency pill -->
         <TextView
             android:id="@+id/txt_recurring_frequency"
             android:layout_width="0dp"
@@ -38,18 +40,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_recurring_name" />
 
+        <!-- Next due date -->
         <TextView
             android:id="@+id/txt_recurring_due"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Due: Jan 01"
+            android:text="Next: Jan 01 2025"
             android:textColor="@color/primary_blue"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/txt_recurring_amount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_recurring_frequency" />
 
+        <!-- Amount (right side, centered vertically) -->
         <TextView
             android:id="@+id/txt_recurring_amount"
             android:layout_width="wrap_content"
@@ -58,9 +62,23 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/switch_recurring_active"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Active / paused toggle -->
+        <Switch
+            android:id="@+id/switch_recurring_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:checked="true"
+            android:text="Active"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_recurring_amount" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

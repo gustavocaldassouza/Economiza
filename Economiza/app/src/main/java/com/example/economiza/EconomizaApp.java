@@ -27,6 +27,9 @@ import com.example.economiza.domain.usecase.UpdateBudgetUseCase;
 import com.example.economiza.domain.usecase.DeleteBudgetUseCase;
 import com.example.economiza.domain.usecase.AddCategoryUseCase;
 import com.example.economiza.domain.usecase.AddRecurringPaymentUseCase;
+import com.example.economiza.domain.usecase.DeleteRecurringPaymentUseCase;
+import com.example.economiza.domain.usecase.UpdateRecurringPaymentUseCase;
+import com.example.economiza.domain.usecase.ProcessRecurringPaymentsUseCase;
 import com.example.economiza.domain.usecase.AddTransactionUseCase;
 import com.example.economiza.domain.usecase.DeleteCategoryUseCase;
 import com.example.economiza.domain.usecase.UpdateCategoryUseCase;
@@ -131,7 +134,19 @@ public class EconomizaApp extends Application {
         DeleteBudgetUseCase deleteBudget = new DeleteBudgetUseCase(budgetRepository);
         GetRecurringPaymentsUseCase getRecurringPayments = new GetRecurringPaymentsUseCase(recurringRepo);
         AddRecurringPaymentUseCase addRecurringPayment = new AddRecurringPaymentUseCase(recurringRepo);
+        UpdateRecurringPaymentUseCase updateRecurringPayment = new UpdateRecurringPaymentUseCase(recurringRepo);
+        DeleteRecurringPaymentUseCase deleteRecurringPayment = new DeleteRecurringPaymentUseCase(recurringRepo);
+        ProcessRecurringPaymentsUseCase processRecurring = new ProcessRecurringPaymentsUseCase(recurringRepo,
+                transactionRepository);
         exportDataUseCase = new ExportDataUseCase(transactionRepository);
+
+        // Auto-post any overdue recurring payments on unlock
+        new Thread(() -> {
+            int posted = processRecurring.execute();
+            if (posted > 0) {
+                android.util.Log.i("Economiza", posted + " recurring payment(s) auto-posted.");
+            }
+        }).start();
 
         viewModelFactory = new ViewModelFactory(
                 getTransactions, addTransaction, updateTransaction, deleteTransaction,
@@ -140,7 +155,8 @@ public class EconomizaApp extends Application {
                 transactionRepository,
                 getCategories, addCategory, updateCategory, deleteCategory,
                 getBudgets, addBudget, updateBudget, deleteBudget,
-                getRecurringPayments, addRecurringPayment,
+                getRecurringPayments, addRecurringPayment, updateRecurringPayment, deleteRecurringPayment,
+                processRecurring,
                 exportDataUseCase);
     }
 
