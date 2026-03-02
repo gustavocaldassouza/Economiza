@@ -42,7 +42,7 @@ import java.util.Map;
 public class DashboardFragment extends Fragment {
 
     private DashboardViewModel viewModel;
-    private TextView txtBalance, txtIncome, txtExpenses;
+    private TextView txtBalance, txtIncome, txtExpenses, txtSpendingTotal, txtSpendingRange;
     private BarChart barChart;
     private PieChart pieChart;
 
@@ -70,6 +70,8 @@ public class DashboardFragment extends Fragment {
         txtBalance = view.findViewById(R.id.txt_balance_value);
         txtIncome = view.findViewById(R.id.txt_income_value);
         txtExpenses = view.findViewById(R.id.txt_expense_value);
+        txtSpendingTotal = view.findViewById(R.id.txt_spending_total_val);
+        txtSpendingRange = view.findViewById(R.id.txt_spending_range);
         barChart = view.findViewById(R.id.bar_chart);
         pieChart = view.findViewById(R.id.pie_chart);
 
@@ -121,10 +123,38 @@ public class DashboardFragment extends Fragment {
             if (dayTotals == null || dayTotals.isEmpty()) {
                 barChart.setNoDataText("No data for this week");
                 barChart.invalidate();
+                if (txtSpendingTotal != null)
+                    txtSpendingTotal.setText("R$ 0.00");
+                updateWeeklyRange();
                 return;
             }
+
+            // Calculate total for the week
+            long totalCents = 0;
+            for (DayTotal dt : dayTotals) {
+                totalCents += dt.total;
+            }
+            if (txtSpendingTotal != null) {
+                txtSpendingTotal.setText(String.format(Locale.getDefault(), "R$ %.2f", totalCents / 100.0));
+            }
+
+            updateWeeklyRange();
             populateBarChart(dayTotals);
         });
+    }
+
+    private void updateWeeklyRange() {
+        if (txtSpendingRange == null)
+            return;
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd", Locale.getDefault());
+        String end = sdf.format(cal.getTime());
+
+        cal.add(Calendar.DAY_OF_YEAR, -6);
+        String start = sdf.format(cal.getTime());
+
+        txtSpendingRange.setText(String.format("%s - %s", start, end));
     }
 
     // ── Chart population ─────────────────────────────────────────────────────
