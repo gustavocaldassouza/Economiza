@@ -177,6 +177,157 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Forecasts & Insights Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_forecasts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="@dimen/margin_large"
+                app:cardBackgroundColor="@color/card_background"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation"
+                app:layout_constraintTop_toBottomOf="@id/card_balance"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Forecasts &amp; Insights \uD83D\uDD2E"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <!-- Safe to Spend Limit -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_piggy_bank"
+                            app:tint="@color/accent_green" />
+                            
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Safe-to-Spend (Daily Runway)"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                            <TextView
+                                android:id="@+id/txt_forecast_safe_spend"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Calculating..."
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- End of Month Projection -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_transactions" 
+                            app:tint="@color/primary_blue" />
+                            
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Projected End-of-Month Balance"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                            <TextView
+                                android:id="@+id/txt_forecast_end_balance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Calculating..."
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Fixed vs Variable Expense Ratio -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_budget"
+                            app:tint="#CE93D8" />
+                            
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fixed vs. Variable Expense Ratio"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                            <TextView
+                                android:id="@+id/txt_forecast_ratio"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0% / 0%"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Burn Rate Warning Container -->
+                    <LinearLayout
+                        android:id="@+id/container_burn_rate_warnings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Spending Card -->
             <com.google.android.material.card.MaterialCardView
@@ -189,7 +340,7 @@
                 app:cardBackgroundColor="@color/card_background"
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="@dimen/card_elevation"
-                app:layout_constraintTop_toBottomOf="@id/card_balance"
+                app:layout_constraintTop_toBottomOf="@id/card_forecasts"
                 app:strokeWidth="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout

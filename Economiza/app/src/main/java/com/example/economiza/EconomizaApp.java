@@ -43,6 +43,10 @@ import com.example.economiza.domain.usecase.GetTotalExpensesUseCase;
 import com.example.economiza.domain.usecase.GetTotalIncomeUseCase;
 import com.example.economiza.domain.usecase.GetTransactionByIdUseCase;
 import com.example.economiza.domain.usecase.UpdateTransactionUseCase;
+import com.example.economiza.domain.usecase.CalculateSafeToSpendUseCase;
+import com.example.economiza.domain.usecase.CalculateCategoryBurnRateUseCase;
+import com.example.economiza.domain.usecase.ProjectEndOfMonthBalanceUseCase;
+import com.example.economiza.domain.usecase.CalculateExpenseRatioUseCase;
 import com.example.economiza.ui.viewmodel.ViewModelFactory;
 
 public class EconomizaApp extends Application {
@@ -140,6 +144,12 @@ public class EconomizaApp extends Application {
                 transactionRepository);
         exportDataUseCase = new ExportDataUseCase(transactionRepository);
 
+        // New Predictive Forecast Use Cases
+        CalculateSafeToSpendUseCase calculateSafeToSpend = new CalculateSafeToSpendUseCase(transactionRepository, budgetRepository, recurringRepo);
+        CalculateCategoryBurnRateUseCase calculateCategoryBurnRate = new CalculateCategoryBurnRateUseCase(budgetRepository);
+        ProjectEndOfMonthBalanceUseCase projectEndOfMonthBalance = new ProjectEndOfMonthBalanceUseCase(transactionRepository, recurringRepo);
+        CalculateExpenseRatioUseCase calculateExpenseRatio = new CalculateExpenseRatioUseCase(transactionRepository, recurringRepo);
+
         // Auto-post any overdue recurring payments on unlock
         new Thread(() -> {
             int posted = processRecurring.execute();
@@ -157,7 +167,8 @@ public class EconomizaApp extends Application {
                 getBudgets, addBudget, updateBudget, deleteBudget,
                 getRecurringPayments, addRecurringPayment, updateRecurringPayment, deleteRecurringPayment,
                 processRecurring,
-                exportDataUseCase);
+                exportDataUseCase,
+                calculateSafeToSpend, calculateCategoryBurnRate, projectEndOfMonthBalance, calculateExpenseRatio);
     }
 
     /** Seeds 8 default categories if the categories table is empty. */

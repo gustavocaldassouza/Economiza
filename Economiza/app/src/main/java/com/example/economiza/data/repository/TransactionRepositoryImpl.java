@@ -53,8 +53,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    public long getTotalExpensesSync() {
+        return dao.getTotalExpensesSync();
+    }
+
+    @Override
     public LiveData<Long> getTotalIncome() {
         return dao.getTotalIncome();
+    }
+
+    @Override
+    public long getTotalIncomeSync() {
+        return dao.getTotalIncomeSync();
     }
 
     @Override

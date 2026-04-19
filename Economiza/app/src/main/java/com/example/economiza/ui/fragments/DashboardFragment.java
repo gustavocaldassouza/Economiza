@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.economiza.EconomizaApp;
 import com.example.economiza.R;
+import com.example.economiza.domain.model.BurnRateWarning;
 import com.example.economiza.domain.model.Category;
 import com.example.economiza.domain.model.CategoryTotal;
 import com.example.economiza.domain.model.DayTotal;
@@ -43,6 +44,8 @@ public class DashboardFragment extends Fragment {
 
     private DashboardViewModel viewModel;
     private TextView txtBalance, txtIncome, txtExpenses, txtSpendingTotal, txtSpendingRange;
+    private TextView txtForecastSafeSpend, txtForecastEndBalance, txtForecastRatio;
+    private android.widget.LinearLayout containerBurnRateWarnings;
     private BarChart barChart;
     private PieChart pieChart;
 
@@ -72,6 +75,12 @@ public class DashboardFragment extends Fragment {
         txtExpenses = view.findViewById(R.id.txt_expense_value);
         txtSpendingTotal = view.findViewById(R.id.txt_spending_total_val);
         txtSpendingRange = view.findViewById(R.id.txt_spending_range);
+        
+        txtForecastSafeSpend = view.findViewById(R.id.txt_forecast_safe_spend);
+        txtForecastEndBalance = view.findViewById(R.id.txt_forecast_end_balance);
+        txtForecastRatio = view.findViewById(R.id.txt_forecast_ratio);
+        containerBurnRateWarnings = view.findViewById(R.id.container_burn_rate_warnings);
+
         barChart = view.findViewById(R.id.bar_chart);
         pieChart = view.findViewById(R.id.pie_chart);
 
@@ -135,6 +144,62 @@ public class DashboardFragment extends Fragment {
 
             updateWeeklyRange();
             populateBarChart(dayTotals != null ? dayTotals : new ArrayList<>());
+        });
+
+        // ── Forecasts & Insights ────────────────────────────────────────────────
+        viewModel.safeToSpendLimit.observe(getViewLifecycleOwner(), limit -> {
+            if (limit != null && txtForecastSafeSpend != null) {
+                txtForecastSafeSpend.setText(String.format(Locale.getDefault(), "$ %.2f / day", limit.limit / 100.0));
+                txtForecastSafeSpend.setTextColor(limit.limit > 0 ? 0xFF00D084 : 0xFFEF5350); // Green / Red
+            }
+        });
+
+        viewModel.forecastedBalance.observe(getViewLifecycleOwner(), balance -> {
+            if (balance != null && txtForecastEndBalance != null) {
+                txtForecastEndBalance.setText(String.format(Locale.getDefault(), "$ %.2f", balance.amount / 100.0));
+                txtForecastEndBalance.setTextColor(balance.amount >= 0 ? 0xFF00D084 : 0xFFEF5350);
+            }
+        });
+
+        viewModel.expenseRatio.observe(getViewLifecycleOwner(), ratio -> {
+            if (ratio != null && txtForecastRatio != null) {
+                int fixedPct = (int) Math.round(ratio.fixedPercentage * 100);
+                int varPct = (int) Math.round(ratio.variablePercentage * 100);
+                txtForecastRatio.setText(String.format(Locale.getDefault(), "Fixed: %d%% | Variable: %d%%", fixedPct, varPct));
+            }
+        });
+
+        viewModel.burnRateWarnings.observe(getViewLifecycleOwner(), warnings -> {
+            if (containerBurnRateWarnings == null) return;
+            containerBurnRateWarnings.removeAllViews();
+            
+            if (warnings == null || warnings.isEmpty()) {
+                containerBurnRateWarnings.setVisibility(View.GONE);
+                return;
+            }
+            
+            containerBurnRateWarnings.setVisibility(View.VISIBLE);
+            
+            for (BurnRateWarning warning : warnings) {
+                TextView tv = new TextView(requireContext());
+                tv.setTextColor(0xFFEF5350); // Red
+                tv.setTextSize(12f);
+                
+                int spendPct = (int) Math.round(warning.currentSpendPercentage * 100);
+                
+                if (warning.currentSpendPercentage >= 1.0) {
+                     tv.setText(String.format(Locale.getDefault(), "🚨 %s at %d%%. Budget Exceeded!", warning.categoryName, spendPct));
+                } else {
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd", Locale.getDefault());
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(warning.projectedExceedDate);
+                    String exceedDateStr = sdf.format(cal.getTime());
+                    
+                    tv.setText(String.format(Locale.getDefault(), "⚠️ %s at %d%%. Projected to exceed by %s.", warning.categoryName, spendPct, exceedDateStr));
+                }
+                tv.setPadding(0, 8, 0, 8);
+                containerBurnRateWarnings.addView(tv);
+            }
         });
     }
 
