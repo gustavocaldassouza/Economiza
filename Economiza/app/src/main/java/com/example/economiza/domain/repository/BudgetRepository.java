@@ -15,4 +15,6 @@ public interface BudgetRepository {
     LiveData<List<BudgetListItem>> getAllBudgetsWithSpending(long start, long end);
 
     LiveData<Budget> getBudgetForCategory(int catId);
+
+    List<BudgetListItem> getBudgetsWithSpendingSync(long start, long end);
 }

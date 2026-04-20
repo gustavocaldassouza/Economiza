@@ -23,7 +23,11 @@ public interface TransactionRepository {
 
     LiveData<Long> getTotalExpenses();
 
+    long getTotalExpensesSync();
+
     LiveData<Long> getTotalIncome();
+
+    long getTotalIncomeSync();
 
     LiveData<List<Transaction>> getTransactionsByCategory(int catId);
 

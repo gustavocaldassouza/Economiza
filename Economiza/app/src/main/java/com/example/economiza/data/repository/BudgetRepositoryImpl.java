@@ -35,6 +35,11 @@ public class BudgetRepositoryImpl implements BudgetRepository {
     }
 
     @Override
+    public List<BudgetListItem> getBudgetsWithSpendingSync(long start, long end) {
+        return budgetDao.getBudgetsWithSpendingSync(start, end);
+    }
+
+    @Override
     public LiveData<Budget> getBudgetForCategory(int catId) {
         return budgetDao.getBudgetForCategory(catId);
     }

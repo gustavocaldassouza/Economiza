@@ -26,6 +26,10 @@ import com.example.economiza.domain.usecase.GetTransactionsUseCase;
 import com.example.economiza.domain.repository.TransactionRepository;
 import com.example.economiza.domain.usecase.GetTotalExpensesUseCase;
 import com.example.economiza.domain.usecase.GetTotalIncomeUseCase;
+import com.example.economiza.domain.usecase.CalculateSafeToSpendUseCase;
+import com.example.economiza.domain.usecase.CalculateCategoryBurnRateUseCase;
+import com.example.economiza.domain.usecase.ProjectEndOfMonthBalanceUseCase;
+import com.example.economiza.domain.usecase.CalculateExpenseRatioUseCase;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -51,6 +55,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final DeleteRecurringPaymentUseCase deleteRecurringPayment;
     private final ProcessRecurringPaymentsUseCase processRecurring;
     private final ExportDataUseCase exportData;
+    private final CalculateSafeToSpendUseCase calculateSafeToSpend;
+    private final CalculateCategoryBurnRateUseCase calculateCategoryBurnRate;
+    private final ProjectEndOfMonthBalanceUseCase projectEndOfMonthBalance;
+    private final CalculateExpenseRatioUseCase calculateExpenseRatio;
 
     public ViewModelFactory(
             GetTransactionsUseCase getTransactions,
@@ -74,7 +82,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             UpdateRecurringPaymentUseCase updateRecurringPayment,
             DeleteRecurringPaymentUseCase deleteRecurringPayment,
             ProcessRecurringPaymentsUseCase processRecurring,
-            ExportDataUseCase exportData) {
+            ExportDataUseCase exportData,
+            CalculateSafeToSpendUseCase calculateSafeToSpend,
+            CalculateCategoryBurnRateUseCase calculateCategoryBurnRate,
+            ProjectEndOfMonthBalanceUseCase projectEndOfMonthBalance,
+            CalculateExpenseRatioUseCase calculateExpenseRatio) {
         this.getTransactions = getTransactions;
         this.addTransaction = addTransaction;
         this.updateTransaction = updateTransaction;
@@ -97,6 +109,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.deleteRecurringPayment = deleteRecurringPayment;
         this.processRecurring = processRecurring;
         this.exportData = exportData;
+        this.calculateSafeToSpend = calculateSafeToSpend;
+        this.calculateCategoryBurnRate = calculateCategoryBurnRate;
+        this.projectEndOfMonthBalance = projectEndOfMonthBalance;
+        this.calculateExpenseRatio = calculateExpenseRatio;
     }
 
     @SuppressWarnings("unchecked")
@@ -104,7 +120,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(DashboardViewModel.class))
-            return (T) new DashboardViewModel(getTotalExpenses, getTotalIncome, txRepo, getCategories);
+            return (T) new DashboardViewModel(getTotalExpenses, getTotalIncome, txRepo, getCategories,
+                    calculateSafeToSpend, calculateCategoryBurnRate, projectEndOfMonthBalance, calculateExpenseRatio);
 
         if (modelClass.isAssignableFrom(TransactionViewModel.class))
             return (T) new TransactionViewModel(getTransactions, addTransaction, updateTransaction, deleteTransaction,

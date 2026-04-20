@@ -37,8 +37,14 @@ public interface TransactionDao {
         @Query("SELECT SUM(amount) FROM Transactions WHERE is_income = 0")
         LiveData<Long> getTotalExpenses();
 
+        @Query("SELECT COALESCE(SUM(amount), 0) FROM Transactions WHERE is_income = 0")
+        long getTotalExpensesSync();
+
         @Query("SELECT SUM(amount) FROM Transactions WHERE is_income = 1")
         LiveData<Long> getTotalIncome();
+
+        @Query("SELECT COALESCE(SUM(amount), 0) FROM Transactions WHERE is_income = 1")
+        long getTotalIncomeSync();
 
         @Query("SELECT * FROM Transactions WHERE category_id = :catId ORDER BY date DESC")
         LiveData<List<Transaction>> getTransactionsByCategory(int catId);
