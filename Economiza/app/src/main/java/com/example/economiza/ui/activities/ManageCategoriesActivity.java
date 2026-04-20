@@ -69,12 +69,27 @@ public class ManageCategoriesActivity extends BaseActivity
 
     @Override
     public void onDelete(Category category) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Category")
-                .setMessage("Delete \"" + category.name + "\"? This may affect existing transactions.")
-                .setPositiveButton("Delete", (d, w) -> vm.deleteCategory(category))
-                .setNegativeButton("Cancel", null)
-                .show();
+        EconomizaApp app = (EconomizaApp) getApplication();
+        new Thread(() -> {
+            int count = app.getTransactionRepository().countByCategory(category.id);
+            runOnUiThread(() -> {
+                if (count > 0) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Cannot Delete")
+                            .setMessage("\"" + category.name + "\" is used by " + count
+                                    + " transaction(s). Reassign or delete those transactions first.")
+                            .setPositiveButton("OK", null)
+                            .show();
+                } else {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Delete Category")
+                            .setMessage("Delete \"" + category.name + "\"?")
+                            .setPositiveButton("Delete", (d, w) -> vm.deleteCategory(category))
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                }
+            });
+        }).start();
     }
 
     private void showCategoryDialog(Category existing) {

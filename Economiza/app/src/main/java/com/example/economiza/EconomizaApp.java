@@ -8,7 +8,6 @@ import com.example.economiza.data.local.AppDatabase;
 import com.example.economiza.data.local.VaultManager;
 import com.example.economiza.ui.activities.CreateVaultActivity;
 import com.example.economiza.ui.activities.OnboardingActivity;
-import com.example.economiza.ui.activities.SetPinActivity;
 import com.example.economiza.ui.activities.UnlockVaultActivity;
 import android.app.Application;
 
@@ -111,9 +110,6 @@ public class EconomizaApp extends Application {
     public void initDependencies(byte[] keyBytes) {
         database = AppDatabase.getInstance(this, keyBytes);
 
-        // Seed default categories on first run
-        new Thread(this::seedDefaultCategories).start();
-
         // Repositories
         transactionRepository = new TransactionRepositoryImpl(database.transactionDao());
         categoryRepository = new CategoryRepositoryImpl(database.categoryDao());
@@ -169,32 +165,6 @@ public class EconomizaApp extends Application {
                 processRecurring,
                 exportDataUseCase,
                 calculateSafeToSpend, calculateCategoryBurnRate, projectEndOfMonthBalance, calculateExpenseRatio);
-    }
-
-    /** Seeds 8 default categories if the categories table is empty. */
-    private void seedDefaultCategories() {
-        if (categoryRepository == null)
-            return;
-        if (categoryRepository.getCategoryCount() > 0)
-            return;
-
-        String[][] defaultCats = {
-                { "Food & Dining", "#FF8A65", "ic_food" },
-                { "Transport", "#3D8BFF", "ic_transport" },
-                { "Utilities", "#FFD54F", "ic_utilities" },
-                { "Healthcare", "#81C784", "ic_health" },
-                { "Entertainment", "#CE93D8", "ic_entertainment" },
-                { "Shopping", "#F48FB1", "ic_shopping" },
-                { "Savings", "#00D084", "ic_savings" },
-                { "Other", "#8E97A8", "ic_other" },
-        };
-        for (String[] c : defaultCats) {
-            com.example.economiza.domain.model.Category cat = new com.example.economiza.domain.model.Category();
-            cat.name = c[0];
-            cat.colorHex = c[1];
-            cat.iconName = c[2];
-            categoryRepository.insert(cat);
-        }
     }
 
     public void lockVault() {

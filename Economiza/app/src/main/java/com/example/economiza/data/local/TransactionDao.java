@@ -46,6 +46,9 @@ public interface TransactionDao {
         @Query("SELECT COALESCE(SUM(amount), 0) FROM Transactions WHERE is_income = 1")
         long getTotalIncomeSync();
 
+        @Query("SELECT COUNT(*) FROM Transactions WHERE category_id = :catId")
+        int countByCategory(int catId);
+
         @Query("SELECT * FROM Transactions WHERE category_id = :catId ORDER BY date DESC")
         LiveData<List<Transaction>> getTransactionsByCategory(int catId);
 

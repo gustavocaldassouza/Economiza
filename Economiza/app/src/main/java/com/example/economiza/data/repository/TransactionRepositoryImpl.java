@@ -68,6 +68,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    public int countByCategory(int catId) {
+        return dao.countByCategory(catId);
+    }
+
+    @Override
     public LiveData<List<Transaction>> getTransactionsByCategory(int c) {
         return dao.getTransactionsByCategory(c);
     }

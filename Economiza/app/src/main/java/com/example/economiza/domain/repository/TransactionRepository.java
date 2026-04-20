@@ -29,6 +29,8 @@ public interface TransactionRepository {
 
     long getTotalIncomeSync();
 
+    int countByCategory(int catId);
+
     LiveData<List<Transaction>> getTransactionsByCategory(int catId);
 
     LiveData<List<Transaction>> getTransactionsByDateRange(long startDate, long endDate);

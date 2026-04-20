@@ -35,10 +35,20 @@ public class TransactionViewModel extends ViewModel {
     }
 
     public void addTransaction(Transaction transaction) {
+        addTransaction(transaction, null, null);
+    }
+
+    public void addTransaction(Transaction transaction, Runnable onSuccess, Runnable onError) {
+        android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
         new Thread(() -> {
             try {
                 addTransactionUseCase.execute(transaction);
+                if (onSuccess != null)
+                    mainHandler.post(onSuccess);
             } catch (Exception e) {
+                android.util.Log.e("TransactionVM", "addTransaction failed", e);
+                if (onError != null)
+                    mainHandler.post(onError);
             }
         }).start();
     }
@@ -48,6 +58,7 @@ public class TransactionViewModel extends ViewModel {
             try {
                 updateTransactionUseCase.execute(transaction);
             } catch (Exception e) {
+                android.util.Log.e("TransactionVM", "updateTransaction failed", e);
             }
         }).start();
     }
@@ -57,6 +68,7 @@ public class TransactionViewModel extends ViewModel {
             try {
                 deleteTransactionUseCase.execute(transaction);
             } catch (Exception e) {
+                android.util.Log.e("TransactionVM", "deleteTransaction failed", e);
             }
         }).start();
     }

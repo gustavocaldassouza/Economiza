@@ -87,17 +87,23 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         // Handle category chip
-        if (categoryCache.containsKey(t.categoryId)) {
-            h.category.setText(categoryCache.get(t.categoryId));
+        if (t.categoryId == null) {
+            h.category.setVisibility(View.GONE);
         } else {
-            h.category.setText("...");
-            executor.execute(() -> {
-                String name = categoryRepository.getCategoryNameByIdSync(t.categoryId);
-                if (name != null) {
-                    categoryCache.put(t.categoryId, name);
-                    h.itemView.post(() -> notifyItemChanged(position));
-                }
-            });
+            h.category.setVisibility(View.VISIBLE);
+            if (categoryCache.containsKey(t.categoryId)) {
+                h.category.setText(categoryCache.get(t.categoryId));
+            } else {
+                h.category.setText("...");
+                int catId = t.categoryId;
+                executor.execute(() -> {
+                    String name = categoryRepository.getCategoryNameByIdSync(catId);
+                    if (name != null) {
+                        categoryCache.put(catId, name);
+                        h.itemView.post(() -> notifyItemChanged(position));
+                    }
+                });
+            }
         }
     }
 

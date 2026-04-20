@@ -6,7 +6,7 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Transactions", foreignKeys = @ForeignKey(entity = Category.class, parentColumns = "id", childColumns = "category_id", onDelete = ForeignKey.CASCADE), indices = {
+@Entity(tableName = "Transactions", foreignKeys = @ForeignKey(entity = Category.class, parentColumns = "id", childColumns = "category_id", onDelete = ForeignKey.RESTRICT), indices = {
         @Index("category_id") })
 public class Transaction {
 
@@ -23,7 +23,7 @@ public class Transaction {
     public long timestamp;
 
     @ColumnInfo(name = "category_id")
-    public int categoryId;
+    public Integer categoryId;
 
     @ColumnInfo(name = "is_income")
     public boolean isIncome;

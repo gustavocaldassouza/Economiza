@@ -47,11 +47,13 @@ public class AddTransactionActivity extends BaseActivity {
     private MaterialButton btnExpense, btnIncome, btnDelete;
     private Spinner spinnerCategory;
     private View viewCategoryColor;
+    private TextView txtCategoryLabel;
+    private View cardCategory;
 
     private boolean isExpense = true;
     private long selectedDateMillis = System.currentTimeMillis();
     private List<Category> categoryList = new ArrayList<>();
-    private int selectedCategoryId = 0;
+    private Integer selectedCategoryId = null;
     private int editingTransactionId = -1;
 
     @Override
@@ -68,6 +70,8 @@ public class AddTransactionActivity extends BaseActivity {
         spinnerCategory = findViewById(R.id.spinner_category);
         viewCategoryColor = findViewById(R.id.view_category_color);
         btnDelete = findViewById(R.id.btn_delete);
+        txtCategoryLabel = findViewById(R.id.txt_category_label);
+        cardCategory = findViewById(R.id.card_category);
 
         // ViewModels
         ViewModelFactory factory = ((EconomizaApp) getApplication()).getViewModelFactory();
@@ -86,11 +90,6 @@ public class AddTransactionActivity extends BaseActivity {
 
         // Date picker
         findViewById(R.id.card_date).setOnClickListener(v -> showDatePicker());
-
-        // OCR placeholder
-        findViewById(R.id.btn_scan_receipt).setOnClickListener(v -> Toast.makeText(this,
-                "📷 Receipt scanning coming soon! Enter details manually for now.",
-                Toast.LENGTH_LONG).show());
 
         // Save
         findViewById(R.id.btn_save).setOnClickListener(v -> saveTransaction());
@@ -125,7 +124,7 @@ public class AddTransactionActivity extends BaseActivity {
             spinnerCategory.setAdapter(adapter);
 
             // Pre-select if we already have the ID (from editing)
-            if (selectedCategoryId != 0) {
+            if (selectedCategoryId != null) {
                 for (int i = 0; i < categoryList.size(); i++) {
                     if (categoryList.get(i).id == selectedCategoryId) {
                         spinnerCategory.setSelection(i);
@@ -175,9 +174,9 @@ public class AddTransactionActivity extends BaseActivity {
                     selectedCategoryId = t.categoryId;
 
                     // Set spinner selection if categories are already loaded
-                    if (!categoryList.isEmpty()) {
+                    if (selectedCategoryId != null && !categoryList.isEmpty()) {
                         for (int i = 0; i < categoryList.size(); i++) {
-                            if (categoryList.get(i).id == selectedCategoryId) {
+                            if (categoryList.get(i).id == (int) selectedCategoryId) {
                                 spinnerCategory.setSelection(i);
                                 updateCategoryColor(categoryList.get(i).colorHex);
                                 break;
@@ -214,6 +213,10 @@ public class AddTransactionActivity extends BaseActivity {
 
         btnIncome.setBackgroundTintList(android.content.res.ColorStateList.valueOf(expense ? inactiveColor : blue));
         btnIncome.setTextColor(expense ? grey : white);
+
+        int catVisibility = expense ? View.VISIBLE : View.GONE;
+        txtCategoryLabel.setVisibility(catVisibility);
+        cardCategory.setVisibility(catVisibility);
     }
 
     private void updateDateLabel() {
@@ -255,6 +258,11 @@ public class AddTransactionActivity extends BaseActivity {
             return;
         }
 
+        if (isExpense && selectedCategoryId == null) {
+            Toast.makeText(this, "Please select a category", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Transaction transaction = new Transaction();
         if (editingTransactionId != -1)
             transaction.id = editingTransactionId;
@@ -267,12 +275,20 @@ public class AddTransactionActivity extends BaseActivity {
 
         if (editingTransactionId != -1) {
             txViewModel.updateTransaction(transaction);
+            Toast.makeText(this, "Transaction updated ✓", Toast.LENGTH_SHORT).show();
+            finish();
         } else {
-            txViewModel.addTransaction(transaction);
+            findViewById(R.id.btn_save).setEnabled(false);
+            txViewModel.addTransaction(transaction,
+                () -> {
+                    Toast.makeText(this, "Transaction saved ✓", Toast.LENGTH_SHORT).show();
+                    finish();
+                },
+                () -> {
+                    findViewById(R.id.btn_save).setEnabled(true);
+                    Toast.makeText(this, "Failed to save transaction. Please try again.", Toast.LENGTH_SHORT).show();
+                });
         }
-
-        Toast.makeText(this, "Transaction saved ✓", Toast.LENGTH_SHORT).show();
-        finish();
     }
 
     private String getText(TextInputEditText view) {

@@ -1,6 +1,6 @@
 [versions]
 room = "2.6.1"
-sqlcipher = "4.5.4"
+sqlcipher = "4.14.1"
 sqlite = "2.4.0"
 agp = "8.13.2"
 junit = "4.13.2"
@@ -12,7 +12,7 @@ activity = "1.12.3"
 constraintlayout = "2.2.1"
 lifecycle = "2.8.4"
 navigation = "2.7.7"
-mlkitText = "16.0.0"
+mlkitText = "16.0.1"
 mpAndroidChart = "v3.1.0"
 opencsv = "5.9"
 itext7 = "7.2.5"
@@ -22,7 +22,7 @@ itext7 = "7.2.5"
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-sqlcipher = { group = "net.zetetic", name = "android-database-sqlcipher", version.ref = "sqlcipher" }
+sqlcipher = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipher" }
 sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "sqlite" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

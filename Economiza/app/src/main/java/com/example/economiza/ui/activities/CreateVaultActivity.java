@@ -1,5 +1,6 @@
 package com.example.economiza.ui.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.economiza.EconomizaApp;
-import com.example.economiza.ui.activities.SetPinActivity;
+import com.example.economiza.MainActivity;
 import com.example.economiza.R;
 import com.example.economiza.data.local.VaultManager;
 import com.google.android.material.button.MaterialButton;
@@ -83,7 +84,11 @@ public class CreateVaultActivity extends AppCompatActivity {
 
         // PBKDF2 is CPU-intensive — run on a background thread
         btnCreate.setEnabled(false);
-        btnCreate.setText("Creating vault…");
+
+        ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage("Creating your vault…");
+        progress.setCancelable(false);
+        progress.show();
 
         new Thread(() -> {
             try {
@@ -95,16 +100,16 @@ public class CreateVaultActivity extends AppCompatActivity {
                 ((EconomizaApp) getApplication()).initDependencies(key);
 
                 runOnUiThread(() -> {
+                    progress.dismiss();
                     Toast.makeText(this, "Vault created! 🔐", Toast.LENGTH_SHORT).show();
-                    // Go to PIN setup — user decides whether to add a PIN or skip
-                    Intent intent = new Intent(this, SetPinActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> {
+                    progress.dismiss();
                     btnCreate.setEnabled(true);
-                    btnCreate.setText("Create Vault");
                     Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }

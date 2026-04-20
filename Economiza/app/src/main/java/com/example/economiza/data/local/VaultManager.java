@@ -28,15 +28,8 @@ public class VaultManager {
     private static final String KEY_SALT = "vault_salt";
     private static final String KEY_VERIFY_HASH = "vault_verify_hash";
     private static final String KEY_VAULT_EXISTS = "vault_exists";
-    /**
-     * Separate app-level PIN hash (SHA-256 + salt). Stored alongside vault prefs.
-     */
-    private static final String KEY_PIN_HASH = "vault_pin_hash";
-    private static final String KEY_PIN_SALT = "vault_pin_salt";
-
-    // PBKDF2 parameters – 310,000 iterations is OWASP 2023 recommendation for
-    // SHA-256
-    private static final int PBKDF2_ITERATIONS = 310_000;
+    // PBKDF2 parameters – 100,000 iterations balances security and mobile performance
+    private static final int PBKDF2_ITERATIONS = 100_000;
     private static final int KEY_LENGTH_BITS = 256; // database encryption key
     private static final int VERIFY_LENGTH_BITS = 256; // separate hash for verification
     private static final int SALT_BYTES = 16;
@@ -102,43 +95,6 @@ public class VaultManager {
      */
     public void destroyVault() {
         prefs.edit().clear().apply();
-    }
-
-    // ─── Device PIN ─────────────────────────────────────────────────────────────
-
-    /** Returns true if a device PIN has been set for the vault. */
-    public boolean hasPinSet() {
-        return prefs.contains(KEY_PIN_HASH);
-    }
-
-    /**
-     * Stores a hashed + salted version of the PIN.
-     * Uses PBKDF2 with fewer iterations (10_000) since it's already gated
-     * behind the vault password — speed is acceptable here.
-     */
-    public void createPin(String pin) {
-        byte[] salt = generateSalt();
-        byte[] hash = pbkdf2(pin, salt, 10_000, 256);
-        prefs.edit()
-                .putString(KEY_PIN_SALT, Base64.encodeToString(salt, Base64.NO_WRAP))
-                .putString(KEY_PIN_HASH, Base64.encodeToString(hash, Base64.NO_WRAP))
-                .commit();
-    }
-
-    /**
-     * Verifies the supplied PIN against the stored hash.
-     * 
-     * @return true if the PIN is correct.
-     */
-    public boolean verifyPin(String pin) {
-        String saltStr = prefs.getString(KEY_PIN_SALT, null);
-        String storedHash = prefs.getString(KEY_PIN_HASH, null);
-        if (saltStr == null || storedHash == null)
-            return false;
-
-        byte[] salt = Base64.decode(saltStr, Base64.NO_WRAP);
-        byte[] hash = pbkdf2(pin, salt, 10_000, 256);
-        return constantTimeEquals(storedHash, Base64.encodeToString(hash, Base64.NO_WRAP));
     }
 
     // ─── Private helpers ────────────────────────────────────────────────────────
